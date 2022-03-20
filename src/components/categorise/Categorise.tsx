@@ -1,30 +1,54 @@
-import { Button, ButtonGroup, ControlGroup, Heading, Input, Spacer, Table } from '@dtdot/lego';
+import { Button, Heading, Spacer, Table } from '@dtdot/lego';
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { v4 } from 'uuid';
 import storage from '../../core/storage';
 
 import { ProcessedDataRow } from '../../types/DataRow';
 import { Rule } from './Rule';
+import CategoriesTable from './_CategoriesTable';
+import RuleCreator from './_RuleCreator';
 import RuleTable from './_RuleTable';
 
 const GridOuter = styled.div`
   display: grid;
-  grid-template-columns: auto 600px;
+  grid-template-columns: auto 800px 400px;
+  grid-template-rows: auto 64px;
+  grid-gap: 16px;
+  padding: 16px;
+
+  height: 100vh;
 `;
 
 const RemainingPane = styled.div`
   grid-column: 1;
-  grid-row: 2;
+  grid-row: 1;
+  grid-row-end: 3;
 
-  padding: 16px;
+  overflow: auto;
 `;
 
 const RulePane = styled.div`
   grid-column: 2;
+  grid-row: 1;
+  grid-row-end: 3;
+
+  overflow: auto;
+`;
+
+const CategoryPane = styled.div`
+  grid-column: 3;
+  grid-row: 1;
+
+  overflow: auto;
+`;
+
+const ControlPane = styled.div`
+  grid-column: 3;
   grid-row: 2;
 
-  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 `;
 
 export interface CategoriseProps {
@@ -58,16 +82,6 @@ const Categorise = ({ data }: CategoriseProps) => {
     setRules(newRules);
   };
 
-  const onNewRule = () => {
-    addRule({ id: v4(), text: filterText.toLowerCase(), ignore: false });
-    setFilterText('');
-  };
-
-  const onIgnoreRule = () => {
-    addRule({ id: v4(), text: filterText.toLowerCase(), ignore: true });
-    setFilterText('');
-  };
-
   const onRemoveRule = (id: string) => {
     removeRule(id);
   };
@@ -76,28 +90,42 @@ const Categorise = ({ data }: CategoriseProps) => {
     setFilterText(text);
   };
 
+  const onReset = () => {
+    storage.removeItem('rules');
+    storage.removeItem('categories');
+    window.location.reload();
+  };
+
   const notMatchingRules = useMemo(
     () =>
       data
         .filter((row) => rules.every((rule) => !row.description.includes(rule.text)))
         .sort((a, b) => {
-          if (a.count === b.count) {
+          if (a.totalAmount === b.totalAmount) {
             return b.description.localeCompare(a.description);
           }
 
-          return b.count - a.count;
+          return b.totalAmount - a.totalAmount;
         }),
     [data, rules],
   );
 
-  const rulesWithValues = useMemo(
-    () =>
-      rules.map((rule) => ({
-        ...rule,
-        amount: sum(data.filter((row) => row.description.includes(rule.text)).map((row) => row.amount)),
-      })),
-    [rules, data],
-  );
+  const rulesWithValues = useMemo(() => {
+    const sums: Record<string, number> = {};
+
+    let dataWorkingSet = [...data];
+    rules.forEach((rule) => {
+      const matching = dataWorkingSet.filter((row) => row.description.includes(rule.text));
+      dataWorkingSet = dataWorkingSet.filter((row) => !row.description.includes(rule.text));
+
+      sums[rule.id] = sum(matching.map((row) => row.amount));
+    });
+
+    return rules.map((rule) => ({
+      ...rule,
+      amount: sums[rule.id],
+    }));
+  }, [rules, data]);
 
   const matchingFilter = filterText
     ? notMatchingRules
@@ -147,21 +175,27 @@ const Categorise = ({ data }: CategoriseProps) => {
           </>
         )}
       </RemainingPane>
+
       <RulePane>
+        <Heading.SubHeading>New Rule</Heading.SubHeading>
+        <Spacer size='1x' />
+        <RuleCreator filterText={filterText} onFilterTextChange={setFilterText} onCreate={addRule} />
+        <Spacer size='4x' />
+        <Spacer size='4x' />
         <Heading.SubHeading>Rules</Heading.SubHeading>
         <Spacer size='1x' />
-        <ControlGroup variation='submission'>
-          <Input value={filterText} onChange={setFilterText} />
-          <ButtonGroup>
-            <Button variant='secondary' onClick={onIgnoreRule}>
-              Ignore
-            </Button>
-            <Button onClick={onNewRule}>New Rule</Button>
-          </ButtonGroup>
-        </ControlGroup>
-        <Spacer size='4x' />
         <RuleTable data={rulesWithValues} onRemove={onRemoveRule} />
       </RulePane>
+
+      <CategoryPane>
+        <Heading.SubHeading>Summary</Heading.SubHeading>
+        <Spacer size='1x' />
+        <CategoriesTable data={data} rules={rules} />
+      </CategoryPane>
+
+      <ControlPane>
+        <Button onClick={onReset}>Reset</Button>
+      </ControlPane>
     </GridOuter>
   );
 };

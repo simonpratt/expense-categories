@@ -13,17 +13,25 @@ const processData = (data: DataRow[]): ProcessedDataRow[] => {
   }));
 
   const counts: Record<string, number> = {};
+  const totalAmount: Record<string, number> = {};
   processed.forEach((row) => {
     if (counts[row.description]) {
       counts[row.description]++;
     } else {
       counts[row.description] = 1;
     }
+
+    if (totalAmount[row.description]) {
+      totalAmount[row.description] += row.amount;
+    } else {
+      totalAmount[row.description] = row.amount;
+    }
   });
 
   return processed.map((row) => ({
     ...row,
     count: counts[row.description],
+    totalAmount: totalAmount[row.description],
   }));
 };
 

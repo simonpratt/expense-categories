@@ -10,4 +10,5 @@ export interface ProcessedDataRow {
   description: string;
   amount: number;
   count: number;
+  totalAmount: number;
 }
