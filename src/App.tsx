@@ -1,7 +1,12 @@
+import Flow from './components/flow/Flow';
 import RootProvider from './RootProvider';
 
 function App() {
-  return <RootProvider>App goes here!</RootProvider>;
+  return (
+    <RootProvider>
+      <Flow />
+    </RootProvider>
+  );
 }
 
 export default App;

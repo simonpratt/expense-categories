@@ -1,6 +1,7 @@
 import React from 'react';
 import { BodyStyle, Themes } from '@dtdot/lego';
 import { ThemeProvider } from 'styled-components';
+import { NotificationProvider, Notifications } from '@dtdot/notifications';
 
 export interface RootProviderProps {
   children: React.ReactNode;
@@ -9,8 +10,11 @@ export interface RootProviderProps {
 const RootProvider = ({ children }: RootProviderProps) => {
   return (
     <ThemeProvider theme={Themes.dark}>
-      <BodyStyle />
-      {children}
+      <NotificationProvider>
+        <BodyStyle />
+        <Notifications />
+        {children}
+      </NotificationProvider>
     </ThemeProvider>
   );
 };
