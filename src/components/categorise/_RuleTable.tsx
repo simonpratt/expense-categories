@@ -13,7 +13,7 @@ const RuleTable = ({ data, onRemove }: RuleTableProps) => (
         <Table.Cell>${rule.amount}</Table.Cell>
         <Table.Cell>{rule.text}</Table.Cell>
         <Table.Cell>{rule.ignore ? 'Ignored' : rule.category}</Table.Cell>
-        <Table.Cell>
+        <Table.Cell variant='tight'>
           <Table.Action text='Remove' onClick={() => onRemove(rule.id)} />
         </Table.Cell>
       </Table.Row>

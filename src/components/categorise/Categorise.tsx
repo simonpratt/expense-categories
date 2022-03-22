@@ -1,7 +1,8 @@
 import { Button, Heading, Spacer, Table } from '@dtdot/lego';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import storage from '../../core/storage';
+import HelperModalsContext from '../../external/HelperModals/HelperModals.context';
 
 import { ProcessedDataRow } from '../../types/DataRow';
 import { Rule } from './Rule';
@@ -11,9 +12,9 @@ import RuleTable from './_RuleTable';
 
 const GridOuter = styled.div`
   display: grid;
-  grid-template-columns: auto 800px 400px;
+  grid-template-columns: auto 500px 400px;
   grid-template-rows: auto 64px;
-  grid-gap: 16px;
+  grid-gap: 8px;
   padding: 16px;
 
   height: 100vh;
@@ -60,6 +61,7 @@ const sum = (arr: number[]): number => {
 };
 
 const Categorise = ({ data }: CategoriseProps) => {
+  const { requestConfirmation } = useContext(HelperModalsContext);
   const [filterText, setFilterText] = useState('');
   const [rules, setRules] = useState<Rule[]>([]);
 
@@ -90,7 +92,15 @@ const Categorise = ({ data }: CategoriseProps) => {
     setFilterText(text);
   };
 
-  const onReset = () => {
+  const onReset = async () => {
+    const confirmed = await requestConfirmation(
+      'Are you sure?',
+      'Resetting with clear all of your categories and all of your filters',
+    );
+    if (!confirmed) {
+      return;
+    }
+
     storage.removeItem('rules');
     storage.removeItem('categories');
     window.location.reload();

@@ -2,12 +2,12 @@ import { Button, ControlGroup, Form, Input, Modal } from '@dtdot/lego';
 import { useState } from 'react';
 
 export interface InputModalProps {
-  message: string;
+  heading: string;
   onClose: () => void;
   onSubmit: (val: string) => void;
 }
 
-const InputModal = ({ message, onClose, onSubmit }: InputModalProps) => {
+const InputModal = ({ heading, onClose, onSubmit }: InputModalProps) => {
   const [value, setValue] = useState({ name: '' });
 
   const _onSubmitClicked = () => {
@@ -17,7 +17,7 @@ const InputModal = ({ message, onClose, onSubmit }: InputModalProps) => {
 
   return (
     <Modal onClose={onClose}>
-      <Modal.Header header={message || 'Input Required'} />
+      <Modal.Header header={heading || 'Input Required'} />
       <Modal.Body>
         <Form value={value} onChange={setValue}>
           <ControlGroup variation='submission'>

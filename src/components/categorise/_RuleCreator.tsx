@@ -52,6 +52,11 @@ const RuleCreator = ({ filterText, onFilterTextChange, onCreate }: RuleCreatorPr
 
   const onAddCategory = async () => {
     const name = await requestInput('Category Name?');
+
+    if (!name) {
+      return;
+    }
+
     const newCategories = [...categories, name.toLowerCase()];
     storage.setItem('categories', newCategories);
     setCategories(newCategories);
