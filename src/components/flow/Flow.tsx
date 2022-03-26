@@ -53,6 +53,8 @@ const Flow = () => {
   if (step === 'CATEGORISE' && postData) {
     return <Categorise data={postData} />;
   }
+
+  return null;
 };
 
 export default Flow;
