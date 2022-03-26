@@ -1,6 +1,6 @@
 import { Table } from '@dtdot/lego';
 import { ProcessedDataRow } from '../../types/DataRow';
-import { Rule } from './Rule';
+import { Rule } from '../../types/Rule';
 
 function onlyUnique<T>(value: T, index: number, self: T[]) {
   return self.indexOf(value) === index;

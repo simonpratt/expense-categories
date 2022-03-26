@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataRow, ProcessedDataRow } from '../../types/DataRow';
 import PostProcess from '../processing/PostProcess';
 import Process from '../processing/Process';
 import Upload from '../csv/Upload';
 import Categorise from '../categorise/Categorise';
+import storage from '../../core/storage';
 
 type Step = 'UPLOAD' | 'PROCESSING' | 'POST_PROCESS' | 'CATEGORISE';
 
@@ -12,6 +13,14 @@ const Flow = () => {
   const [file, setFile] = useState<File>();
   const [data, setData] = useState<DataRow[]>();
   const [postData, setPostData] = useState<ProcessedDataRow[]>();
+
+  useEffect(() => {
+    const loaded = storage.getItem('data');
+    if (loaded) {
+      setPostData(loaded);
+      setStep('CATEGORISE');
+    }
+  }, [setPostData]);
 
   const handleUpload = (_file: File) => {
     setFile(_file);
@@ -23,8 +32,9 @@ const Flow = () => {
     setStep('POST_PROCESS');
   };
 
-  const handlePostProcessed = (_data: ProcessedDataRow[]) => {
-    setPostData(_data);
+  const handlePostProcessed = (_postData: ProcessedDataRow[]) => {
+    setPostData(_postData);
+    storage.setItem('data', _postData);
     setStep('CATEGORISE');
   };
 

@@ -4,7 +4,3 @@ export interface Rule {
   ignore: boolean;
   category?: string;
 }
-
-export interface RuleWithData extends Rule {
-  amount: number;
-}

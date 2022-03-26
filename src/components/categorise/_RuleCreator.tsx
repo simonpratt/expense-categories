@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { v4 } from 'uuid';
 import storage from '../../core/storage';
 import HelperModalsContext from '../../external/HelperModals/HelperModals.context';
-import { Rule } from './Rule';
+import { Rule } from '../../types/Rule';
 
 const HSpacer = styled.div`
   flex-grow: 1;

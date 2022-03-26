@@ -1,12 +1,13 @@
-import { Button, Heading, Spacer, Table } from '@dtdot/lego';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { Button, Heading, Spacer } from '@dtdot/lego';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import storage from '../../core/storage';
 import HelperModalsContext from '../../external/HelperModals/HelperModals.context';
 
 import { ProcessedDataRow } from '../../types/DataRow';
-import { Rule } from './Rule';
+import { Rule } from '../../types/Rule';
 import CategoriesTable from './_CategoriesTable';
+import RemainingTable from './_RemainingTable';
 import RuleCreator from './_RuleCreator';
 import RuleTable from './_RuleTable';
 
@@ -56,10 +57,6 @@ export interface CategoriseProps {
   data: ProcessedDataRow[];
 }
 
-const sum = (arr: number[]): number => {
-  return arr.reduce((total, current) => total + current, 0);
-};
-
 const Categorise = ({ data }: CategoriseProps) => {
   const { requestConfirmation } = useContext(HelperModalsContext);
   const [filterText, setFilterText] = useState('');
@@ -84,14 +81,6 @@ const Categorise = ({ data }: CategoriseProps) => {
     setRules(newRules);
   };
 
-  const onRemoveRule = (id: string) => {
-    removeRule(id);
-  };
-
-  const onFilter = (text: string) => {
-    setFilterText(text);
-  };
-
   const onReset = async () => {
     const confirmed = await requestConfirmation(
       'Are you sure?',
@@ -101,89 +90,16 @@ const Categorise = ({ data }: CategoriseProps) => {
       return;
     }
 
+    storage.removeItem('data');
     storage.removeItem('rules');
     storage.removeItem('categories');
     window.location.reload();
   };
 
-  const notMatchingRules = useMemo(
-    () =>
-      data
-        .filter((row) => rules.every((rule) => !row.description.includes(rule.text)))
-        .sort((a, b) => {
-          if (a.totalAmount === b.totalAmount) {
-            return b.description.localeCompare(a.description);
-          }
-
-          return b.totalAmount - a.totalAmount;
-        }),
-    [data, rules],
-  );
-
-  const rulesWithValues = useMemo(() => {
-    const sums: Record<string, number> = {};
-
-    let dataWorkingSet = [...data];
-    rules.forEach((rule) => {
-      const matching = dataWorkingSet.filter((row) => row.description.includes(rule.text));
-      dataWorkingSet = dataWorkingSet.filter((row) => !row.description.includes(rule.text));
-
-      sums[rule.id] = sum(matching.map((row) => row.amount));
-    });
-
-    return rules.map((rule) => ({
-      ...rule,
-      amount: sums[rule.id],
-    }));
-  }, [rules, data]);
-
-  const matchingFilter = filterText
-    ? notMatchingRules
-        .filter((row) => row.description.toLowerCase().includes(filterText.toLowerCase()))
-        .sort((a, b) => {
-          if (a.count === b.count) {
-            return b.description.localeCompare(a.description);
-          }
-
-          return b.count - a.count;
-        })
-    : undefined;
-
   return (
     <GridOuter>
       <RemainingPane>
-        {matchingFilter && (
-          <>
-            <Heading.SubHeading>{matchingFilter.length} Matching</Heading.SubHeading>
-            <Spacer size='1x' />
-            <Table>
-              {matchingFilter.map((row, index) => (
-                <Table.Row key={index}>
-                  <Table.Cell>${row.amount}</Table.Cell>
-                  <Table.Cell>{row.description}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table>
-          </>
-        )}
-
-        {!matchingFilter && (
-          <>
-            <Heading.SubHeading>{notMatchingRules.length} Remaining</Heading.SubHeading>
-            <Spacer size='1x' />
-            <Table>
-              {notMatchingRules.map((row, index) => (
-                <Table.Row key={index}>
-                  <Table.Cell>${row.amount}</Table.Cell>
-                  <Table.Cell>{row.description}</Table.Cell>
-                  <Table.Cell>
-                    <Table.Action text='Filter' onClick={() => onFilter(row.description)} />
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table>
-          </>
-        )}
+        <RemainingTable data={data} rules={rules} filterText={filterText} onFilter={setFilterText} />
       </RemainingPane>
 
       <RulePane>
@@ -194,7 +110,7 @@ const Categorise = ({ data }: CategoriseProps) => {
         <Spacer size='4x' />
         <Heading.SubHeading>Rules</Heading.SubHeading>
         <Spacer size='1x' />
-        <RuleTable data={rulesWithValues} onRemove={onRemoveRule} />
+        <RuleTable data={data} rules={rules} onRemove={removeRule} />
       </RulePane>
 
       <CategoryPane>
