@@ -1,7 +1,5 @@
 import { CenteredLayout, Loader } from '@dtdot/lego';
-import { useContext, useEffect } from 'react';
-import Papa from 'papaparse';
-import { NotificationContext } from '@dtdot/notifications';
+import { useEffect } from 'react';
 import { DataRow } from '../../types/DataRow';
 
 const tempMap = (row: any): DataRow => {
@@ -17,31 +15,18 @@ const tempParse = (data: any[]) => {
 };
 
 export interface ProcessProps {
-  file: File;
+  rawData: Record<string, string>[];
   onProcessed: (data: DataRow[]) => void;
 }
 
-const Process = ({ file, onProcessed }: ProcessProps) => {
-  const { addNotification } = useContext(NotificationContext);
-
+/**
+ * Component for defining the column mappings for the provided CSV file
+ */
+const Process = ({ rawData, onProcessed }: ProcessProps) => {
   useEffect(() => {
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        if (results.errors.length) {
-          addNotification({ variant: 'danger', message: 'An unknown error occurred when processing your csv' });
-          return;
-        }
-
-        const processed = tempParse(results.data);
-        onProcessed(processed);
-      },
-      error: () => {
-        addNotification({ variant: 'danger', message: 'An unknown error occurred when processing your csv' });
-      },
-    });
-  }, [file, onProcessed, addNotification]);
+    const processed = tempParse(rawData);
+    onProcessed(processed);
+  }, [rawData, onProcessed]);
 
   return (
     <CenteredLayout>

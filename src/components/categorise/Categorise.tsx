@@ -109,13 +109,13 @@ const Categorise = ({ data }: CategoriseProps) => {
         <Spacer size='4x' />
         <Spacer size='4x' />
         <Heading.SubHeading>Rules</Heading.SubHeading>
-        <Spacer size='1x' />
+        <Spacer size='2x' />
         <RuleTable data={data} rules={rules} onRemove={removeRule} />
       </RulePane>
 
       <CategoryPane>
         <Heading.SubHeading>Summary</Heading.SubHeading>
-        <Spacer size='1x' />
+        <Spacer size='2x' />
         <CategoriesTable data={data} rules={rules} />
       </CategoryPane>
 

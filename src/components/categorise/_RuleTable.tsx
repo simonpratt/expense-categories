@@ -33,6 +33,17 @@ const RuleTable = ({ data, rules, onRemove }: RuleTableProps) => {
 
   return (
     <Table>
+      <Table.Row>
+        <Table.Cell>
+          <strong>Total</strong>
+        </Table.Cell>
+        <Table.Cell>
+          <strong>Filter Text</strong>
+        </Table.Cell>
+        <Table.Cell>
+          <strong>Cetegory</strong>
+        </Table.Cell>
+      </Table.Row>
       {rulesWithValues.map((rule, index) => (
         <Table.Row key={index}>
           <Table.Cell>${rule.amount}</Table.Cell>

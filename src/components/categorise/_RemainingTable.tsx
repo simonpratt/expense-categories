@@ -42,8 +42,16 @@ const RemainingTable = ({ data, rules, filterText, onFilter }: RemainingTablePro
       {matchingFilter && (
         <>
           <Heading.SubHeading>{matchingFilter.length} Matching</Heading.SubHeading>
-          <Spacer size='1x' />
+          <Spacer size='2x' />
           <Table>
+            <Table.Row>
+              <Table.Cell>
+                <strong>Amount</strong>
+              </Table.Cell>
+              <Table.Cell>
+                <strong>Description</strong>
+              </Table.Cell>
+            </Table.Row>
             {matchingFilter.map((row, index) => (
               <Table.Row key={index}>
                 <Table.Cell>${row.amount}</Table.Cell>
@@ -57,8 +65,16 @@ const RemainingTable = ({ data, rules, filterText, onFilter }: RemainingTablePro
       {!matchingFilter && (
         <>
           <Heading.SubHeading>{notMatchingRules.length} Remaining</Heading.SubHeading>
-          <Spacer size='1x' />
+          <Spacer size='2x' />
           <Table>
+            <Table.Row>
+              <Table.Cell>
+                <strong>Amount</strong>
+              </Table.Cell>
+              <Table.Cell>
+                <strong>Description</strong>
+              </Table.Cell>
+            </Table.Row>
             {notMatchingRules.map((row, index) => (
               <Table.Row key={index}>
                 <Table.Cell>${row.amount}</Table.Cell>

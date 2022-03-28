@@ -10,7 +10,7 @@ type Step = 'UPLOAD' | 'PROCESSING' | 'POST_PROCESS' | 'CATEGORISE';
 
 const Flow = () => {
   const [step, setStep] = useState<Step>('UPLOAD');
-  const [file, setFile] = useState<File>();
+  const [rawData, setRawData] = useState<Record<string, string>[]>();
   const [data, setData] = useState<DataRow[]>();
   const [postData, setPostData] = useState<ProcessedDataRow[]>();
 
@@ -22,8 +22,8 @@ const Flow = () => {
     }
   }, [setPostData]);
 
-  const handleUpload = (_file: File) => {
-    setFile(_file);
+  const handleRaw = (_rawData: Record<string, string>[]) => {
+    setRawData(_rawData);
     setStep('PROCESSING');
   };
 
@@ -39,11 +39,11 @@ const Flow = () => {
   };
 
   if (step === 'UPLOAD') {
-    return <Upload onUpload={handleUpload} />;
+    return <Upload onUpload={handleRaw} />;
   }
 
-  if (step === 'PROCESSING' && file) {
-    return <Process file={file} onProcessed={handleProcessed} />;
+  if (step === 'PROCESSING' && rawData) {
+    return <Process rawData={rawData} onProcessed={handleProcessed} />;
   }
 
   if (step === 'POST_PROCESS' && data) {
