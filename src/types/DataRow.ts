@@ -6,7 +6,7 @@ export interface DataRow {
 
 export interface ProcessedDataRow {
   id: string;
-  date: string;
+  date: Date;
   description: string;
   amount: number;
   count: number;

@@ -51,8 +51,8 @@ const CategoriesTable = ({ data, rules }: CategoriesTableProps) => {
 
   const sortedCategories = categoriesWithTotal.sort((a, b) => b.total - a.total);
 
-  const minDate = Math.min(...data.map((row) => Date.parse(row.date)));
-  const maxDate = Math.max(...data.map((row) => Date.parse(row.date)));
+  const minDate = Math.min(...data.map((row) => row.date.valueOf()));
+  const maxDate = Math.max(...data.map((row) => row.date.valueOf()));
 
   const durationSeconds = (maxDate - minDate) / 1000;
   const durationMinutes = durationSeconds / 60;

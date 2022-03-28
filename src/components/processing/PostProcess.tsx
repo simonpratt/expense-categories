@@ -1,6 +1,11 @@
 import { CenteredLayout, Loader } from '@dtdot/lego';
 import { useEffect } from 'react';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
 import { DataRow, ProcessedDataRow } from '../../types/DataRow';
+
+dayjs.extend(customParseFormat);
 
 const tempRegexArr = [/ - Visa.*/, / - EFTPOS.*/, / - Receipt.*/];
 
@@ -30,6 +35,7 @@ const processData = (data: DataRow[]): ProcessedDataRow[] => {
 
   return processed.map((row) => ({
     ...row,
+    date: dayjs(row.date, 'DD-MM-YYYY').toDate(),
     count: counts[row.description],
     totalAmount: totalAmount[row.description],
   }));
