@@ -2,7 +2,7 @@
 
 ## Application
 
-Application is available at xxxxx to preview and use. No data is sent to any servers and all data is processed locally in your browser.
+Application is available at https://expense-categories.pages.dev to preview and use. No data is sent to any servers and all data is processed locally in your browser.
 
 Currently the application only supports CSV's in one particular format as exported by the ING customer portal. Futher work is required to support any CSV format.
 
