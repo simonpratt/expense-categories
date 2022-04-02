@@ -1,8 +1,8 @@
-import { Button, Heading, Spacer } from '@dtdot/lego';
 import { useContext, useEffect, useState } from 'react';
+import { DialoguesContext } from '@dtdot/dialogues';
+import { Button, Heading, Spacer } from '@dtdot/lego';
 import styled from 'styled-components';
 import storage from '../../core/storage';
-import HelperModalsContext from '../../external/HelperModals/HelperModals.context';
 
 import { ProcessedDataRow } from '../../types/DataRow';
 import { Rule } from '../../types/Rule';
@@ -58,7 +58,7 @@ export interface CategoriseProps {
 }
 
 const Categorise = ({ data }: CategoriseProps) => {
-  const { requestConfirmation } = useContext(HelperModalsContext);
+  const { requestConfirmation } = useContext(DialoguesContext);
   const [filterText, setFilterText] = useState('');
   const [rules, setRules] = useState<Rule[]>([]);
 

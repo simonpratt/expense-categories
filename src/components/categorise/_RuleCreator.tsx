@@ -1,10 +1,10 @@
+import { DialoguesContext } from '@dtdot/dialogues';
 import { BadgeSelector, Button, ButtonGroup, ControlGroup, Input } from '@dtdot/lego';
 import { BadgeSelectorOption } from '@dtdot/lego/build/components/BadgeSelector/BadgeSelector.component';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { v4 } from 'uuid';
 import storage from '../../core/storage';
-import HelperModalsContext from '../../external/HelperModals/HelperModals.context';
 import { Rule } from '../../types/Rule';
 
 const HSpacer = styled.div`
@@ -18,7 +18,7 @@ export interface RuleCreatorProps {
 }
 
 const RuleCreator = ({ filterText, onFilterTextChange, onCreate }: RuleCreatorProps) => {
-  const { requestInput } = useContext(HelperModalsContext);
+  const { requestInput } = useContext(DialoguesContext);
   const [categories, setCategories] = useState<string[]>(['unknown']);
   const [selectedCategory, setSelectedCategory] = useState<string>('unknown');
 

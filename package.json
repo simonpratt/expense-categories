@@ -10,6 +10,7 @@
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {
+    "@dtdot/dialogues": "^0.0.1",
     "@dtdot/lego": "^0.18.4",
     "@dtdot/notifications": "^0.1.9",
     "dayjs": "^1.11.0",
