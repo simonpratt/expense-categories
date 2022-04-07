@@ -1,6 +1,6 @@
 # Usage
 
-Expense categories is a CSV parsing and categorisig tool designed to group similar expenses togeather and provide an overview of your finances. 
+Expense categories is a CSV parsing and categorising tool designed to group similar expenses togeather and provide an overview of your finances. 
 
 Currently the application only supports CSV's in one particular format as exported by the ING customer portal. Futher work is required to support any CSV format.
 
