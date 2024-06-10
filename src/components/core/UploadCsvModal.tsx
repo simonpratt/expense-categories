@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Box, Typography } from '@mui/material';
+import Papa from 'papaparse';
 
 interface UploadCsvModalProps {
   open: boolean;
@@ -7,6 +8,18 @@ interface UploadCsvModalProps {
 }
 
 const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ open, handleClose }) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        complete: (results) => {
+          console.log(results.data);
+        },
+      });
+    }
+  };
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box
@@ -25,7 +38,7 @@ const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ open, handleClose }) =>
         <Typography variant='h6' component='h2'>
           Upload CSV File
         </Typography>
-        <input type='file' accept='.csv' />
+        <input type='file' accept='.csv' onChange={handleFileUpload} />
       </Box>
     </Modal>
   );
