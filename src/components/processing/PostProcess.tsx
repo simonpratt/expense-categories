@@ -1,4 +1,4 @@
-import { CenteredLayout, Loader } from '@dtdot/lego';
+import { Heading, PaddedLayout, Spacer, Table, Text } from '@dtdot/lego';
 import { useEffect } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -63,9 +63,28 @@ const PostProcess = ({ data, onPostProcessed }: PostProcessProps) => {
   }, [data, onPostProcessed]);
 
   return (
-    <CenteredLayout>
-      <Loader />
-    </CenteredLayout>
+    <PaddedLayout>
+      <Heading.SubHeading>Parsing</Heading.SubHeading>
+      <Spacer size='1x' />
+      <Text>Post-processing for your data</Text>
+
+      <Spacer size='4x' />
+
+      <Table>
+        <Table.Row>
+          <Table.Cell>Date</Table.Cell>
+          <Table.Cell>Description</Table.Cell>
+          <Table.Cell>Amount</Table.Cell>
+        </Table.Row>
+        {data.map((row, index) => (
+          <Table.Row key={index}>
+            <Table.Cell>{row.date}</Table.Cell>
+            <Table.Cell>{row.description}</Table.Cell>
+            <Table.Cell>{row.amount}</Table.Cell>
+          </Table.Row>
+        ))}
+      </Table>
+    </PaddedLayout>
   );
 };
 
