@@ -8,6 +8,7 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "declaration": true,
+    "skipLibCheck": true,
     "outDir": "build",
     "strict": true,
   },

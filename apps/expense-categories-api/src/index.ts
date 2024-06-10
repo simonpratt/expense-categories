@@ -1,5 +1,5 @@
 import { startServer } from './server';
 
-export { RootRouter } from './server';
+export type { RootRouter } from './server';
 
 startServer();

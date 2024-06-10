@@ -1,3 +1,4 @@
+import React from 'react';
 import RootProvider from './RootProvider';
 import { Outlet } from 'react-router-dom';
 import Menu from './components/core/Menu';

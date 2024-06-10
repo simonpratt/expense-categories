@@ -9,6 +9,7 @@
     "noImplicitThis": true,
     "outDir": "build",
     "strict": true,
+    "skipLibCheck": true,
     "jsx": "react-jsx",
   },
   "include": ["src/**/*.ts"],

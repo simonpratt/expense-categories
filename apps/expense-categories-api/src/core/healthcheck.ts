@@ -1,8 +1,4 @@
-import {
-  expressHealthCheckFactory,
-  registerHealthCheckDependency,
-} from '@expense-categories/healthcheck';
-
+import { expressHealthCheckFactory, registerHealthCheckDependency } from '@expense-categories/healthcheck';
 import { prisma } from './prisma.client';
 
 registerHealthCheckDependency({

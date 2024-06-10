@@ -1,3 +1,4 @@
+import React from 'react';
 import { Table } from '@dtdot/lego';
 import { useMemo } from 'react';
 import { ProcessedDataRow } from '../../types/DataRow';

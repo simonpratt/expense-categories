@@ -3,5 +3,10 @@
     "categorisation",
     "CATEGORISE",
     "Turborepo"
+  ],
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.workingDirectories": [
+      { "pattern": "./packages/*" },
+      { "pattern": "./apps/*" },
   ]
 }

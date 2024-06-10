@@ -1,3 +1,4 @@
+import React from 'react';
 import { Spacer, Table, Text } from '@dtdot/lego';
 import styled from 'styled-components';
 import { ProcessedDataRow } from '../../types/DataRow';

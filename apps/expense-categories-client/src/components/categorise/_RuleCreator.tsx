@@ -1,3 +1,4 @@
+import React from 'react';
 import { DialoguesContext } from '@dtdot/dialogues';
 import { BadgeSelector, Button, ButtonGroup, ControlGroup, Input } from '@dtdot/lego';
 import { BadgeSelectorOption } from '@dtdot/lego/build/components/BadgeSelector/BadgeSelector.component';

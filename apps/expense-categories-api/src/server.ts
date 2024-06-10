@@ -67,10 +67,8 @@ export const startServer = async () => {
       router: rootRouter,
       async createContext(ctx) {
         const authToken = ctx.req.headers.authorization?.split(' ')[1];
-        const systemCallToken = ctx.req.headers['x-system-call'] as string;
-        const identityToken = ctx.req.headers.identity as string;
 
-        return createContext(authToken, identityToken, systemCallToken);
+        return createContext(authToken!);
       },
       onError({ path, error }) {
         logger.error({ path, error }, 'Error in TRPC');

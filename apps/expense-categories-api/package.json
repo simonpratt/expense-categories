@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "main": "src/export.ts",
+  "type": "module",
   "scripts": {
     "lint": "eslint .",
     "predev": "npx prisma migrate deploy && npx prisma generate",

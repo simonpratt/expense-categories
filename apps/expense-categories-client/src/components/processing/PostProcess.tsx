@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Heading, PaddedLayout, Spacer, Table, Text } from '@dtdot/lego';
 import { useEffect } from 'react';
 import dayjs from 'dayjs';

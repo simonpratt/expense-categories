@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, CenteredLayout, Heading, PaddedLayout, Spacer, Table, Text } from '@dtdot/lego';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
