@@ -14,7 +14,31 @@ const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ open, handleClose }) =>
       Papa.parse(file, {
         header: true,
         complete: (results) => {
-          console.log(results.data);
+          const data = results.data.map((row: any) => ({
+            date: row.Date,
+            description: row.Description,
+            credit: row.Credit,
+            debit: row.Debit,
+          }));
+
+          const credits = data
+            .filter((row) => row.credit)
+            .map((row) => ({
+              date: row.date,
+              description: row.description,
+              amount: row.credit,
+            }));
+
+          const debits = data
+            .filter((row) => row.debit)
+            .map((row) => ({
+              date: row.date,
+              description: row.description,
+              amount: row.debit,
+            }));
+
+          console.log('Credits:', credits);
+          console.log('Debits:', debits);
         },
       });
     }
