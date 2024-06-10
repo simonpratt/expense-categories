@@ -1,6 +1,9 @@
-/node_modules
-/dist
-/build
+node_modules/
+dist/
+build/
 .aider*
 .vite
 .turbo
+.env
+.DS_Store
+generated/
