@@ -9,7 +9,6 @@ const transactionsRouter = router({
       id: z.string().uuid(),
       uniqueRef: z.string().optional(),
       description: z.string(),
-      account: z.string().default('everyday'),
       date: z.date(),
       credit: z.number().optional(),
       debit: z.number().optional(),

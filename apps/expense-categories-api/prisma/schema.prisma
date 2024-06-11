@@ -16,7 +16,6 @@ model transaction {
   id String @id @default(uuid())
   uniqueRef String? @unique
   description String
-  account String @default("everyday")
   date DateTime
   credit Float?
   debit Float?
