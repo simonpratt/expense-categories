@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 export const addManyTransactions = async (transactions: any) => {
   const createdTransactions = await prisma.transaction.createMany({
     data: transactions,
+    skipDuplicates: true, // This will ignore rows with duplicate uniqueRef
   });
   return createdTransactions;
 };
