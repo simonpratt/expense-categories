@@ -1,4 +1,5 @@
 import { router, authenticatedProcedure } from '../core/trpc.base';
+import { addManyTransactions } from '../services/transaction.service';
 
 const transactionsRouter = router({
   getAll: authenticatedProcedure.query(() => {
@@ -14,10 +15,7 @@ const transactionsRouter = router({
       debit: z.number().optional(),
     })))
     .mutation(async ({ input, ctx }) => {
-      const createdTransactions = await ctx.prisma.transaction.createMany({
-        data: input,
-      });
-      return createdTransactions;
+      return await addManyTransactions(input);
     }),
 });
 
