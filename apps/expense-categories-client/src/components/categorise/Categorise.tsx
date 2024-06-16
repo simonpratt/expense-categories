@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
+import { useTheme as useStyledTheme } from 'styled-components';
 import { Table } from '@dtdot/lego';
 import { Box, Button, List, ListItem, ListItemText, ListItemIcon, Typography, useTheme } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
@@ -19,6 +20,7 @@ const Categorise = () => {
     setAddCategoryModalOpen(false);
   };
 
+  const darkTheme = useStyledTheme() as any;
   const theme = useTheme();
 
   return (
@@ -29,7 +31,6 @@ const Categorise = () => {
           {categories?.map((category) => (
             <ListItem
               key={category.id}
-              button
               onClick={() => console.log(`Category ${category.name} clicked`)}
               sx={{
                 '&:hover': {
@@ -38,7 +39,7 @@ const Categorise = () => {
                 '&:active': {
                   backgroundColor: theme.palette.action.selected,
                 },
-                'color': theme.palette.text.primary,
+                'color': darkTheme.colours.defaultFont,
               }}
             >
               <ListItemIcon>
