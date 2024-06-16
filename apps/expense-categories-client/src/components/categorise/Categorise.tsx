@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Table } from '@dtdot/lego';
 import { Box, Button, List, ListItem, ListItemText, ListItemIcon, Typography } from '@mui/material';
+import AddCategoryModal from '../modals/AddCategoryModal';
 import { Add as AddIcon, Circle as CircleIcon } from '@mui/icons-material';
 
 const Categorise = () => {
-  const { data: transactionSummaries, isLoading } = apiConnector.app.transactions.getSummary.useQuery();
+  const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
+  const [isAddCategoryModalOpen, setAddCategoryModalOpen] = useState(false);
+
+  const handleOpenAddCategoryModal = () => {
+    setAddCategoryModalOpen(true);
+  };
+
+  const handleCloseAddCategoryModal = () => {
+    setAddCategoryModalOpen(false);
+  };
 
   return (
     <Box display='flex'>
@@ -22,7 +32,7 @@ const Categorise = () => {
             </ListItem>
           ))}
         </List>
-        <Button variant='contained' color='primary' startIcon={<AddIcon />}>
+        <Button variant='contained' color='primary' startIcon={<AddIcon />} onClick={handleOpenAddCategoryModal}>
           Add Category
         </Button>
       </Box>
@@ -37,6 +47,7 @@ const Categorise = () => {
           ))}
         </Table>
       </Box>
+      {isAddCategoryModalOpen && <AddCategoryModal handleClose={handleCloseAddCategoryModal} />}
     </Box>
   );
 };
