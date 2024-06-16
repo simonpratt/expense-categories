@@ -4,7 +4,8 @@ import { useTheme as useStyledTheme } from 'styled-components';
 import { Table } from '@dtdot/lego';
 import { Box, Button, List, ListItem, ListItemText, ListItemIcon, Typography, useTheme } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
-import { Add as AddIcon, Circle as CircleIcon } from '@mui/icons-material';
+import { Add as AddIcon } from '@mui/icons-material';
+import { styled } from '@mui/system';
 import { colorMapping } from '../../core/colorMapping';
 
 const Categorise = () => {
@@ -22,6 +23,12 @@ const Categorise = () => {
 
   const darkTheme = useStyledTheme() as any;
   const theme = useTheme();
+
+  const ColorSquare = styled('div')(({ color }) => ({
+    width: 20,
+    height: 20,
+    backgroundColor: color,
+  }));
 
   return (
     <Box display='flex'>
@@ -43,7 +50,7 @@ const Categorise = () => {
               }}
             >
               <ListItemIcon>
-                <CircleIcon style={{ color: colorMapping[category.colour] }} />
+                <ColorSquare color={colorMapping[category.colour]} />
               </ListItemIcon>
               <ListItemText primary={category.name} />
             </ListItem>
