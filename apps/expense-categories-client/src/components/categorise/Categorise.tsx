@@ -6,27 +6,27 @@ import { Add as AddIcon, Circle as CircleIcon } from '@mui/icons-material';
 
 const Categorise = () => {
   const { data: transactionSummaries, isLoading } = apiConnector.app.transactions.getSummary.useQuery();
-  const { data: categories } = apiConnector.app.categories.getAll.useQuery();
+  const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
 
   return (
-    <Box display="flex">
-      <Box width="250px" bgcolor="grey.100" p={2} mr={2}>
-        <Typography variant="h6">Categories</Typography>
+    <Box display='flex'>
+      <Box width='250px' p={2} mr={2}>
+        <Typography variant='h6'>Categories</Typography>
         <List>
           {categories?.map((category) => (
             <ListItem key={category.id}>
               <ListItemIcon>
-                <CircleIcon style={{ color: category.color }} />
+                <CircleIcon style={{ color: category.colour }} />
               </ListItemIcon>
               <ListItemText primary={category.name} />
             </ListItem>
           ))}
         </List>
-        <Button variant="contained" color="primary" startIcon={<AddIcon />}>
+        <Button variant='contained' color='primary' startIcon={<AddIcon />}>
           Add Category
         </Button>
       </Box>
-      <Box flex="1">
+      <Box flex='1'>
         <Table>
           {transactionSummaries?.map((tx) => (
             <Table.Row key={tx.id}>
