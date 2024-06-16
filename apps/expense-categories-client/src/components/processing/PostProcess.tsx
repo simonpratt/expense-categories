@@ -6,17 +6,17 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { DataRow, ProcessedDataRow } from '../../types/DataRow';
+import { parseDescription } from '../../helpers/parseDescription';
 
 dayjs.extend(customParseFormat);
 
-const tempRegexArr = [/ - Visa.*/, / - EFTPOS.*/, / - Receipt.*/];
 
 const processData = (data: DataRow[]): ProcessedDataRow[] => {
   const processed = data.map((row, index) => ({
     ...row,
     id: `${index}`,
     amount: Math.ceil((row.amount as any) * -1),
-    description: processDataDescription(row.description),
+    description: parseDescription(row.description),
   }));
 
   const counts: Record<string, number> = {};
@@ -41,16 +41,6 @@ const processData = (data: DataRow[]): ProcessedDataRow[] => {
     count: counts[row.description],
     totalAmount: totalAmount[row.description],
   }));
-};
-
-const processDataDescription = (description: string): string => {
-  for (let i = 0; i < tempRegexArr.length; i++) {
-    if (tempRegexArr[i].test(description)) {
-      return description.replace(tempRegexArr[i], '').trim().toLowerCase();
-    }
-  }
-
-  return description;
 };
 
 export interface PostProcessProps {

@@ -20,7 +20,7 @@ const Header = () => {
           </div>
         }
       ></MinimalMenu.Header>
-      <UploadCsvModal open={open} handleClose={handleClose} />
+      {open && <UploadCsvModal handleClose={handleClose} />}
     </>
   );
 };

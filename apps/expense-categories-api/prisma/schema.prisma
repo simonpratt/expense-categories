@@ -14,9 +14,12 @@ datasource db {
 
 model transaction {
   id String @id @default(uuid())
-  uniqueRef String? @unique
+  uniqueRef String @unique
+  account String
   description String
-  date DateTime
+  date String
   credit Float?
   debit Float?
 }
+
+//4675

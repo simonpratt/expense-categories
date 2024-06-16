@@ -8,19 +8,21 @@ const transactionsRouter = router({
   }),
   addMany: authenticatedProcedure
     .input(
-      z.array(
-        z.object({
-          id: z.string().uuid(),
-          uniqueRef: z.string().optional(),
-          description: z.string(),
-          date: z.date(),
-          credit: z.number().optional(),
-          debit: z.number().optional(),
-        }),
-      ),
+      z.object({
+        transactions: z.array(
+          z.object({
+            uniqueRef: z.string(),
+            description: z.string(),
+            account: z.string(),
+            date: z.string(),
+            credit: z.coerce.number().optional().optional(),
+            debit: z.coerce.number().optional().optional(),
+          }),
+        ),
+      }),
     )
     .mutation(async ({ input, ctx }) => {
-      return await addManyTransactions(input);
+      return await addManyTransactions(input.transactions);
     }),
 });
 

@@ -1,10 +1,10 @@
 -- CreateTable
 CREATE TABLE "transaction" (
     "id" TEXT NOT NULL,
-    "uniqueRef" TEXT,
+    "uniqueRef" TEXT NOT NULL,
+    "account" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "account" TEXT NOT NULL DEFAULT 'everyday',
-    "date" TIMESTAMP(3) NOT NULL,
+    "date" TEXT NOT NULL,
     "credit" DOUBLE PRECISION,
     "debit" DOUBLE PRECISION,
 

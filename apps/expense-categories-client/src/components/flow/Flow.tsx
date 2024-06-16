@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataRow, ProcessedDataRow } from '../../types/DataRow';
-import PostProcess from '../processing/PostProcess';
+// import PostProcess from '../processing/PostProcess';
 import Process from '../processing/Process';
 import Upload from '../csv/Upload';
 import Categorise from '../categorise/Categorise';
@@ -32,11 +32,11 @@ const Flow = () => {
     setStep('POST_PROCESS');
   };
 
-  const handlePostProcessed = (_postData: ProcessedDataRow[]) => {
-    setPostData(_postData);
-    storage.setItem('data', _postData);
-    setStep('CATEGORISE');
-  };
+  // const handlePostProcessed = (_postData: ProcessedDataRow[]) => {
+  //   setPostData(_postData);
+  //   storage.setItem('data', _postData);
+  //   setStep('CATEGORISE');
+  // };
 
   if (step === 'UPLOAD') {
     return <Upload onUpload={handleRaw} />;
@@ -47,7 +47,8 @@ const Flow = () => {
   }
 
   if (step === 'POST_PROCESS' && data) {
-    return <PostProcess data={data} onPostProcessed={handlePostProcessed} />;
+    return <div>123</div>
+    // return <PostProcess data={data} onPostProcessed={handlePostProcessed} />;
   }
 
   if (step === 'CATEGORISE' && postData) {

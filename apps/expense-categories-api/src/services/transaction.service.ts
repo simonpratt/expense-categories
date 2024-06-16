@@ -1,11 +1,14 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../core/prisma.client';
+import { Prisma } from '../generated/client';
 
-const prisma = new PrismaClient();
-
-export const addManyTransactions = async (transactions: any) => {
+export const addManyTransactions = async (transactions: Prisma.transactionCreateManyInput[]) => {
   const createdTransactions = await prisma.transaction.createMany({
-    data: transactions,
-    skipDuplicates: true, // This will ignore rows with duplicate uniqueRef
+    data: transactions.map((tx) => ({
+      ...tx,
+      credit: tx.credit ? Math.abs(tx.credit) : null,
+      debit: tx.debit ? Math.abs(tx.debit) : null,
+    })),
+    skipDuplicates: true,
   });
   return createdTransactions;
 };

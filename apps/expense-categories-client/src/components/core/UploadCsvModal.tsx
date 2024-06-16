@@ -1,69 +1,57 @@
 import React from 'react';
-import { Modal, Box, Typography } from '@mui/material';
 import Papa from 'papaparse';
+import { DateTime } from 'luxon';
+import { Modal } from '@dtdot/lego';
+import { apiConnector } from '../../core/api.connector';
+import { parseDescription } from '../../helpers/parseDescription';
 
 interface UploadCsvModalProps {
-  open: boolean;
   handleClose: () => void;
 }
 
-const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ open, handleClose }) => {
+const hashValue = (val: string) =>
+  crypto.subtle.digest('SHA-256', new TextEncoder().encode(val)).then((h) => {
+    const hexes: any = [];
+    const view = new DataView(h);
+    for (let i = 0; i < view.byteLength; i += 4) hexes.push(('00000000' + view.getUint32(i).toString(16)).slice(-8));
+    return hexes.join('');
+  });
+
+const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ handleClose }) => {
+  const { mutateAsync, isLoading } = apiConnector.app.transactions.addMany.useMutation();
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      Papa.parse(file, {
+      Papa.parse<any>(file, {
         header: true,
-        complete: (results) => {
-          const data = results.data.map((row: any) => ({
-            date: row.Date,
-            description: row.Description,
-            credit: row.Credit,
-            debit: row.Debit,
-          }));
+        skipEmptyLines: true,
+        complete: async (results) => {
+          const data = [];
+          for (const row of results.data) {
+            const hash = await hashValue(`expenses-${row.Description}-${row.Credit}-${row.Debit}-${row.Date}`);
+            data.push({
+              uniqueRef: hash,
+              description: parseDescription(row.Description),
+              account: 'expenses',
+              date: DateTime.fromFormat(row.Date, 'dd/MM/yyyy').toFormat('yyyy-MM-dd'),
+              credit: Math.abs(+row.Credit),
+              debit: Math.abs(+row.Debit),
+            });
+          }
 
-          const credits = data
-            .filter((row) => row.credit)
-            .map((row) => ({
-              date: row.date,
-              description: row.description,
-              amount: row.credit,
-            }));
-
-          const debits = data
-            .filter((row) => row.debit)
-            .map((row) => ({
-              date: row.date,
-              description: row.description,
-              amount: row.debit,
-            }));
-
-          console.log('Credits:', credits);
-          console.log('Debits:', debits);
+          await mutateAsync({ transactions: data });
+          handleClose();
         },
       });
     }
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          border: '2px solid #000',
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
-        <Typography variant='h6' component='h2'>
-          Upload CSV File
-        </Typography>
+    <Modal onClose={handleClose} loading={isLoading}>
+      <Modal.Body>
         <input type='file' accept='.csv' onChange={handleFileUpload} />
-      </Box>
+      </Modal.Body>
     </Modal>
   );
 };
