@@ -14,7 +14,7 @@ const transactionsRouter = router({
             uniqueRef: z.string(),
             description: z.string(),
             account: z.string(),
-            date: z.string(),
+            date: z.coerce.date(),
             credit: z.coerce.number().optional().optional(),
             debit: z.coerce.number().optional().optional(),
           }),

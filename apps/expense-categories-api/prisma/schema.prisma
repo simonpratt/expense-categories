@@ -12,14 +12,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model transaction {
-  id String @id @default(uuid())
-  uniqueRef String @unique
-  account String
-  description String
-  date String
-  credit Float?
-  debit Float?
+model SpendingCategory {
+  id                  String                @id @default(uuid())
+  name                String                @unique
+  TransactionCategory TransactionCategory[]
+}
+
+model TransactionCategory {
+  id                 String            @id @default(uuid())
+  description        String            @unique
+  totalCredit        Float
+  totalDebit         Float
+  totalFrequency     Float
+  spendingCategoryId String?
+  SpendingCategory   SpendingCategory? @relation(fields: [spendingCategoryId], references: [id])
+  Transaction        Transaction[]
+}
+
+model Transaction {
+  id                    String              @id @default(uuid())
+  uniqueRef             String              @unique
+  account               String
+  date                  DateTime
+  credit                Float?
+  debit                 Float?
+  transactionCategoryId String
+  TransctionDescription TransactionCategory @relation(fields: [transactionCategoryId], references: [id])
 }
 
 //4675

@@ -34,7 +34,7 @@ const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ handleClose }) => {
               uniqueRef: hash,
               description: parseDescription(row.Description),
               account: 'expenses',
-              date: DateTime.fromFormat(row.Date, 'dd/MM/yyyy').toFormat('yyyy-MM-dd'),
+              date: DateTime.fromFormat(row.Date, 'dd/MM/yyyy').setZone('utc').startOf('day').toJSDate(),
               credit: Math.abs(+row.Credit),
               debit: Math.abs(+row.Debit),
             });
