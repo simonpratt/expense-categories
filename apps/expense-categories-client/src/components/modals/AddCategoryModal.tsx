@@ -22,13 +22,13 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ handleClose }) => {
         <div>
           <label>
             Category Name:
-            <input type="text" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
+            <input type='text' value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
           </label>
         </div>
         <div>
           <label>
             Category Color:
-            <input type="color" value={categoryColor} onChange={(e) => setCategoryColor(e.target.value)} />
+            <input type='color' value={categoryColor} onChange={(e) => setCategoryColor(e.target.value)} />
           </label>
         </div>
         <button onClick={handleAddCategory}>Add Category</button>
