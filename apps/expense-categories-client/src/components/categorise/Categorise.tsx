@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { useTheme as useStyledTheme } from 'styled-components';
-import { Table } from '@dtdot/lego';
-import { Box, Button, List, ListItem, ListItemText, ListItemIcon, Typography, useTheme } from '@mui/material';
+import { Table, Button, ControlLine } from '@dtdot/lego';
+import { Box, List, ListItem, ListItemText, ListItemIcon, useTheme } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
-import { Add as AddIcon } from '@mui/icons-material';
 import { styled } from '@mui/system';
 import { colorMapping } from '../../core/colorMapping';
 
@@ -33,22 +32,19 @@ const Categorise = () => {
 
   return (
     <Box display='flex'>
-      <Box width='250px' p={2} mr={2}>
-        <Typography variant='h6'>Categories</Typography>
+      <Box width='350px' p={2}>
         <List>
           {categories?.map((category) => (
             <ListItem
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
               sx={{
-                backgroundColor: selectedCategory === category.id ? theme.palette.action.selected : 'inherit',
+                'backgroundColor': selectedCategory === category.id ? theme.palette.action.selected : 'inherit',
                 '&:hover': {
                   backgroundColor: theme.palette.action.hover,
                 },
-                '&:active': {
-                  backgroundColor: theme.palette.action.selected,
-                },
                 'color': darkTheme.colours.defaultFont,
+                'cursor': 'pointer',
               }}
             >
               <ListItemIcon>
@@ -58,17 +54,13 @@ const Categorise = () => {
             </ListItem>
           ))}
         </List>
-        <Button
-          variant='contained'
-          color='primary'
-          startIcon={<AddIcon />}
-          onClick={handleOpenAddCategoryModal}
-          sx={{ width: '100%' }}
-        >
-          Add Category
-        </Button>
+        <ControlLine>
+          <Button variant='tertiary' onClick={handleOpenAddCategoryModal}>
+            Add Category
+          </Button>
+        </ControlLine>
       </Box>
-      <Box flex='1'>
+      <Box flex='1' pt={3} pr={2}>
         <Table>
           {transactionSummaries?.map((tx) => (
             <Table.Row key={tx.id}>
