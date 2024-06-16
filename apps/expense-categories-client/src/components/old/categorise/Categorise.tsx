@@ -4,7 +4,6 @@ import { DialoguesContext } from '@dtdot/dialogues';
 import { Button, Heading, Spacer } from '@dtdot/lego';
 import styled from 'styled-components';
 import storage from '../../core/storage';
-import { colorMapping } from '../../core/colorMapping';
 
 import { ProcessedDataRow } from '../../types/DataRow';
 import { Rule } from '../../types/Rule';

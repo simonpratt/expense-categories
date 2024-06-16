@@ -6,7 +6,6 @@ import AddCategoryModal from '../modals/AddCategoryModal';
 import { Add as AddIcon, Circle as CircleIcon } from '@mui/icons-material';
 import { colorMapping } from '../../core/colorMapping';
 
-
 const Categorise = () => {
   const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();

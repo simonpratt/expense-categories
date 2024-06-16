@@ -7,7 +7,6 @@ interface AddCategoryModalProps {
   handleClose: () => void;
 }
 
-
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ handleClose }) => {
   const { mutateAsync, isLoading } = apiConnector.app.categories.addCategory.useMutation();
   const [categoryName, setCategoryName] = useState('');
