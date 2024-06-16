@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Table } from '@dtdot/lego';
-import { Box, Button, List, ListItem, ListItemText, ListItemIcon, Typography } from '@mui/material';
+import { Box, Button, List, ListItem, ListItemText, ListItemIcon, Typography, useTheme } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import { Add as AddIcon, Circle as CircleIcon } from '@mui/icons-material';
 import { colorMapping } from '../../core/colorMapping';
@@ -19,13 +19,28 @@ const Categorise = () => {
     setAddCategoryModalOpen(false);
   };
 
+  const theme = useTheme();
+
   return (
     <Box display='flex'>
-      <Box width='250px' p={2} mr={2}>
+      <Box width='250px' p={2} mr={2} bgcolor={theme.palette.background.paper}>
         <Typography variant='h6'>Categories</Typography>
         <List>
           {categories?.map((category) => (
-            <ListItem key={category.id}>
+            <ListItem
+              key={category.id}
+              button
+              onClick={() => console.log(`Category ${category.name} clicked`)}
+              sx={{
+                '&:hover': {
+                  backgroundColor: theme.palette.action.hover,
+                },
+                '&:active': {
+                  backgroundColor: theme.palette.action.selected,
+                },
+                color: theme.palette.text.primary,
+              }}
+            >
               <ListItemIcon>
                 <CircleIcon style={{ color: colorMapping[category.colour] }} />
               </ListItemIcon>
@@ -33,7 +48,13 @@ const Categorise = () => {
             </ListItem>
           ))}
         </List>
-        <Button variant='contained' color='primary' startIcon={<AddIcon />} onClick={handleOpenAddCategoryModal}>
+        <Button
+          variant='contained'
+          color='primary'
+          startIcon={<AddIcon />}
+          onClick={handleOpenAddCategoryModal}
+          sx={{ width: '100%' }}
+        >
           Add Category
         </Button>
       </Box>
