@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '@dtdot/lego';
+import { Button, ControlGroup, Form, Input, Modal, Spacer, Text } from '@dtdot/lego';
 import { apiConnector } from '../../core/api.connector';
 import ColorPicker from './ColorPicker';
 
@@ -9,30 +9,33 @@ interface AddCategoryModalProps {
 
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ handleClose }) => {
   const { mutateAsync, isLoading } = apiConnector.app.categories.addCategory.useMutation();
-  const [categoryName, setCategoryName] = useState('');
-  const [categoryColor, setCategoryColor] = useState('red');
+  const [formValue, setFormValue] = useState({ name: '', colour: 'red' });
 
   const handleAddCategory = async () => {
-    await mutateAsync({ name: categoryName, colour: categoryColor });
+    await mutateAsync(formValue);
     handleClose();
   };
 
   return (
     <Modal onClose={handleClose} loading={isLoading}>
+      <Modal.Header header='Add Category' />
       <Modal.Body>
-        <div>
-          <label>
-            Category Name:
-            <input type='text' value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
-          </label>
-        </div>
-        <div>
-          <div>
-            <label>Category Color:</label>
-            <ColorPicker selectedColor={categoryColor} onSelectColor={setCategoryColor} />
-          </div>
-        </div>
-        <button onClick={handleAddCategory}>Add Category</button>
+        <Form value={formValue} onChange={setFormValue}>
+          <ControlGroup variation='comfortable'>
+            <Input name='name' label='Name' />
+            <div>
+              <Text>Colour</Text>
+              <Spacer size='1x' />
+              <ColorPicker
+                selectedColor={formValue.colour}
+                onSelectColor={(colour) => setFormValue({ ...formValue, colour })}
+              />
+            </div>
+            <Button loading={isLoading} onClick={handleAddCategory} data-testid='button-add'>
+              Add Category
+            </Button>
+          </ControlGroup>
+        </Form>
       </Modal.Body>
     </Modal>
   );

@@ -9,7 +9,7 @@ interface ColorPickerProps {
 
 const ColorPicker: React.FC<ColorPickerProps> = ({ selectedColor, onSelectColor }) => {
   return (
-    <Box display="flex" flexWrap="wrap">
+    <Box display='flex' flexWrap='wrap'>
       {Object.keys(colorMapping).map((color) => (
         <Tooltip key={color} title={color} arrow>
           <Box
@@ -22,16 +22,16 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ selectedColor, onSelectColor 
               }
             }}
             sx={{
-              width: 32,
-              height: 32,
-              backgroundColor: colorMapping[color],
-              border: selectedColor === color ? '3px solid black' : '1px solid gray',
-              cursor: 'pointer',
-              margin: '4px',
-              borderRadius: '4px',
-              outline: 'none',
+              'width': 48,
+              'height': 48,
+              'backgroundColor': colorMapping[color],
+              'border': selectedColor === color ? '3px solid lightgrey' : '1px solid gray',
+              'cursor': 'pointer',
+              'margin': '4px',
+              'borderRadius': '4px',
+              'outline': 'none',
               '&:focus': {
-                border: '3px solid blue',
+                border: '3px solid white',
               },
             }}
           />
