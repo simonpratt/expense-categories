@@ -75,6 +75,10 @@ export const recomputeSummaries = async () => {
   }
 };
 
+export const getTransactionCategories = async () => {
+  return prisma.transactionCategory.findMany({ orderBy: { totalDebit: 'desc' } });
+};
+
 export const getAllTransactions = async () => {
-  return await prisma.transaction.findMany();
+  return prisma.transaction.findMany();
 };

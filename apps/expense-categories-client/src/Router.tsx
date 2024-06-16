@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
 import App from './App';
+import Categorise from './components/categorise/Categorise';
 
 const router = createBrowserRouter([
   {
@@ -14,7 +15,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/categorise',
-        element: <div>categorise!</div>,
+        element: <Categorise />,
       },
       {
         path: '/analyse',
