@@ -12,6 +12,7 @@ const Categorise = () => {
   const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
   const [isAddCategoryModalOpen, setAddCategoryModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const handleOpenAddCategoryModal = () => {
     setAddCategoryModalOpen(true);
@@ -38,8 +39,9 @@ const Categorise = () => {
           {categories?.map((category) => (
             <ListItem
               key={category.id}
-              onClick={() => console.log(`Category ${category.name} clicked`)}
+              onClick={() => setSelectedCategory(category.id)}
               sx={{
+                backgroundColor: selectedCategory === category.id ? theme.palette.action.selected : 'inherit',
                 '&:hover': {
                   backgroundColor: theme.palette.action.hover,
                 },
