@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from '@dtdot/lego';
 import { apiConnector } from '../../core/api.connector';
-import { colorMapping } from '../../core/colorMapping';
+import ColorPicker from './ColorPicker';
 
 interface AddCategoryModalProps {
   handleClose: () => void;
@@ -27,16 +27,10 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ handleClose }) => {
           </label>
         </div>
         <div>
-          <label>
-            Category Color:
-            <select value={categoryColor} onChange={(e) => setCategoryColor(e.target.value)}>
-              {Object.keys(colorMapping).map((color) => (
-                <option key={color} value={color}>
-                  {color}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div>
+            <label>Category Color:</label>
+            <ColorPicker selectedColor={categoryColor} onSelectColor={setCategoryColor} />
+          </div>
         </div>
         <button onClick={handleAddCategory}>Add Category</button>
       </Modal.Body>
