@@ -1,7 +1,7 @@
 import { Button, MinimalMenu } from '@dtdot/lego';
 import React, { useState } from 'react';
 
-import UploadCsvModal from './UploadCsvModal';
+import UploadCsvModal from '../modals/UploadCsvModal';
 
 const Header = () => {
   const [open, setOpen] = useState(false);

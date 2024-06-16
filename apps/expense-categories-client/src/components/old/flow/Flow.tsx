@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { DataRow, ProcessedDataRow } from '../../types/DataRow';
+import { DataRow, ProcessedDataRow } from '../../../types/DataRow';
 // import PostProcess from '../processing/PostProcess';
-import Process from '../processing/Process';
+import Process from '../../processing/Process';
 import Upload from '../csv/Upload';
 import Categorise from '../categorise/Categorise';
-import storage from '../../core/storage';
+import storage from '../../../core/storage';
 
 type Step = 'UPLOAD' | 'PROCESSING' | 'POST_PROCESS' | 'CATEGORISE';
 
