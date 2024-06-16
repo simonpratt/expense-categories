@@ -23,7 +23,7 @@ const Categorise = () => {
 
   return (
     <Box display='flex'>
-      <Box width='250px' p={2} mr={2} bgcolor={theme.palette.background.paper}>
+      <Box width='250px' p={2} mr={2}>
         <Typography variant='h6'>Categories</Typography>
         <List>
           {categories?.map((category) => (
@@ -38,7 +38,7 @@ const Categorise = () => {
                 '&:active': {
                   backgroundColor: theme.palette.action.selected,
                 },
-                color: theme.palette.text.primary,
+                'color': theme.palette.text.primary,
               }}
             >
               <ListItemIcon>
