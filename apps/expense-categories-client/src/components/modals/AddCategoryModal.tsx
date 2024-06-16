@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
 import { Modal } from '@dtdot/lego';
 import { apiConnector } from '../../core/api.connector';
+import { colorMapping } from '../../core/colorMapping';
 
 interface AddCategoryModalProps {
   handleClose: () => void;
 }
 
-const colorMapping = {
-  red: '#FF0000',
-  green: '#00FF00',
-  blue: '#0000FF',
-  yellow: '#FFFF00',
-  purple: '#800080',
-  orange: '#FFA500',
-};
 
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ handleClose }) => {
   const { mutateAsync, isLoading } = apiConnector.app.categories.addCategory.useMutation();

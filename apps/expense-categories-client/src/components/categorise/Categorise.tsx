@@ -4,15 +4,8 @@ import { Table } from '@dtdot/lego';
 import { Box, Button, List, ListItem, ListItemText, ListItemIcon, Typography } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import { Add as AddIcon, Circle as CircleIcon } from '@mui/icons-material';
+import { colorMapping } from '../../core/colorMapping';
 
-const colorMapping = {
-  red: '#FF0000',
-  green: '#00FF00',
-  blue: '#0000FF',
-  yellow: '#FFFF00',
-  purple: '#800080',
-  orange: '#FFA500',
-};
 
 const Categorise = () => {
   const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
