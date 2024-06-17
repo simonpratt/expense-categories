@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
-import { Table, Heading, Spacer, Loader } from '@dtdot/lego';
-import { Box, IconButton } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import { Table, Spacer, Loader } from '@dtdot/lego';
+import { Box } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
-import styled, { useTheme } from 'styled-components';
 import EditCategoryModal from '../modals/EditCategoryModal';
 import CategoryList from './CategoryList';
 import CategoryHeader from './CategoryHeader';
 
-
 const Categorise = () => {
-  const theme = useTheme() as any;
   const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
   const [isAddModalOpen, setAddModalOpen] = useState(false);

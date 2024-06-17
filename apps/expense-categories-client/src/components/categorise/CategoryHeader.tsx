@@ -3,7 +3,6 @@ import { Box, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import styled, { useTheme } from 'styled-components';
 import { Heading } from '@dtdot/lego';
-import { SpendingCategory } from '../../core/api.types';
 
 const CustomHeading = styled(Heading.SubHeading)`
   height: 40px;
