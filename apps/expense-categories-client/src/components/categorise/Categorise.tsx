@@ -61,10 +61,10 @@ const Categorise = () => {
         </ControlLine>
       </Box>
       <Box flex='1' pr={2} pt={1}>
-        <Box display='flex' justifyContent='space-between' alignItems='center' p={2}>
+        <Box display='flex' alignItems='center' p={2}>
           <Heading.SubHeading>{selectedCategoryName}</Heading.SubHeading>
           {selectedCategory && selectedCategory !== 'all' && (
-            <IconButton onClick={handleEditCategory}>
+            <IconButton onClick={handleEditCategory} style={{ marginLeft: '8px' }}>
               <EditIcon />
             </IconButton>
           )}
