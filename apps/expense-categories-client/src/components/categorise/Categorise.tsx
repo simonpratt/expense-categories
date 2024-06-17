@@ -55,7 +55,9 @@ const Categorise = () => {
             .map((tx) => (
               <Table.Row key={tx.id}>
                 <Table.Cell>{tx.description}</Table.Cell>
-                <Table.Cell>{tx.totalDebit}</Table.Cell>
+                <Table.Cell>
+                  {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tx.totalDebit)}
+                </Table.Cell>
                 <Table.Cell>{tx.totalFrequency}</Table.Cell>
               </Table.Row>
             ))}
