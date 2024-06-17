@@ -7,6 +7,7 @@ import AddCategoryModal from '../modals/AddCategoryModal';
 import CategoryListItem from './CategoryListItem';
 import styled, { useTheme } from 'styled-components';
 import EditCategoryModal from '../modals/EditCategoryModal';
+import CategoryList from './CategoryList';
 
 const CustomHeading = styled(Heading.SubHeading)`
   height: 40px;
@@ -38,35 +39,12 @@ const Categorise = () => {
 
   return (
     <Box display='flex'>
-      <Box width='350px' p={2}>
-        <List>
-          <CategoryListItem
-            category={{ id: 'all', name: 'All', colour: null }}
-            selectedCategory={selectedCategory}
-            onClick={() => setSelectedCategory('all')}
-          />
-          <CategoryListItem
-            category={{ id: null, name: 'Uncategorised', colour: 'grey' }}
-            selectedCategory={selectedCategory}
-            onClick={() => setSelectedCategory(null)}
-          />
-          {categories
-            ?.sort((a, b) => a.name.localeCompare(b.name))
-            .map((category) => (
-              <CategoryListItem
-                key={category.id}
-                category={category}
-                selectedCategory={selectedCategory}
-                onClick={() => setSelectedCategory(category.id)}
-              />
-            ))}
-        </List>
-        <ControlLine>
-          <Button variant='tertiary' onClick={() => setAddModalOpen(true)}>
-            Add Category
-          </Button>
-        </ControlLine>
-      </Box>
+      <CategoryList
+        categories={categories}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        setAddModalOpen={setAddModalOpen}
+      />
       <Box flex='1' pr={2} pt={1}>
         <Box display='flex' alignItems='center' p={2}>
           <CustomHeading>{selectedCategoryName}</CustomHeading>
