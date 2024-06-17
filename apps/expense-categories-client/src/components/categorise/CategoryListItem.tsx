@@ -11,7 +11,7 @@ const ColorSquare = styled('div')(({ color }) => ({
 }));
 
 interface CategoryListItemProps {
-  category: { id: string; name: string; colour: string } | null;
+  category: { id: string | null; name: string; colour: string | null };
   selectedCategory: string | null;
   onClick: () => void;
 }
@@ -24,7 +24,8 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedC
     <ListItem
       onClick={onClick}
       sx={{
-        'backgroundColor': selectedCategory === (category ? category.id : null) ? theme.palette.action.selected : 'inherit',
+        'backgroundColor':
+          selectedCategory === (category ? category.id : null) ? theme.palette.action.selected : 'inherit',
         '&:hover': {
           backgroundColor: theme.palette.action.hover,
         },
@@ -32,9 +33,7 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedC
         'cursor': 'pointer',
       }}
     >
-      <ListItemIcon>
-        <ColorSquare color={category ? colorMapping[category.colour] : darkTheme.colours.cardBackground} />
-      </ListItemIcon>
+      <ListItemIcon>{!!category.colour && <ColorSquare color={colorMapping[category.colour]} />}</ListItemIcon>
       <ListItemText primary={category ? category.name : 'Uncategorised'} />
     </ListItem>
   );

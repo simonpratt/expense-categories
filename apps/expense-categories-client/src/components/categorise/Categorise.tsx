@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
-import { useTheme as useStyledTheme } from 'styled-components';
 import { Table, Button, ControlLine } from '@dtdot/lego';
-import { Box, List, ListItem, ListItemText, ListItemIcon, useTheme } from '@mui/material';
+import { Box, List } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
-import { styled } from '@mui/system';
 import CategoryListItem from './CategoryListItem';
 
 const Categorise = () => {
@@ -21,26 +19,17 @@ const Categorise = () => {
     setAddCategoryModalOpen(false);
   };
 
-  const darkTheme = useStyledTheme() as any;
-  const theme = useTheme();
-
-  const ColorSquare = styled('div')(({ color }) => ({
-    width: 20,
-    height: 20,
-    backgroundColor: color,
-  }));
-
   return (
     <Box display='flex'>
       <Box width='350px' p={2}>
         <List>
           <CategoryListItem
-            category={null}
+            category={{ id: 'all', name: 'All', colour: null }}
             selectedCategory={selectedCategory}
             onClick={() => setSelectedCategory('all')}
           />
           <CategoryListItem
-            category={null}
+            category={{ id: null, name: 'Uncategorised', colour: 'grey' }}
             selectedCategory={selectedCategory}
             onClick={() => setSelectedCategory(null)}
           />
