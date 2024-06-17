@@ -1,9 +1,11 @@
 import React from 'react';
-import { List, ControlLine, Button } from '@dtdot/lego';
+import { ControlLine, Button } from '@dtdot/lego';
 import CategoryListItem from './CategoryListItem';
+import { Box, List } from '@mui/material';
+import { SpendingCategory } from '../../core/api.types';
 
 interface CategoryListProps {
-  categories: any[];
+  categories: SpendingCategory[];
   selectedCategory: string | null;
   setSelectedCategory: (category: string | null) => void;
   setAddModalOpen: (open: boolean) => void;

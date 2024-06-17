@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
-import { Table, Button, ControlLine, Heading, Spacer } from '@dtdot/lego';
-import { Box, List, IconButton } from '@mui/material';
+import { Table, Heading, Spacer, Loader } from '@dtdot/lego';
+import { Box, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddCategoryModal from '../modals/AddCategoryModal';
-import CategoryListItem from './CategoryListItem';
 import styled, { useTheme } from 'styled-components';
 import EditCategoryModal from '../modals/EditCategoryModal';
 import CategoryList from './CategoryList';
@@ -35,6 +34,10 @@ const Categorise = () => {
       break;
     default:
       selectedCategoryName = selectedCategoryObj?.name || 'Unknown';
+  }
+
+  if (!categories || !transactionSummaries) {
+    return <Loader variant='page-loader' />;
   }
 
   return (
