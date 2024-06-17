@@ -34,6 +34,36 @@ const Categorise = () => {
     <Box display='flex'>
       <Box width='350px' p={2}>
         <List>
+          <ListItem
+            onClick={() => setSelectedCategory('all')}
+            sx={{
+              'backgroundColor': selectedCategory === 'all' ? theme.palette.action.selected : 'inherit',
+              '&:hover': {
+                backgroundColor: theme.palette.action.hover,
+              },
+              'color': darkTheme.colours.defaultFont,
+              'cursor': 'pointer',
+            }}
+          >
+            <ListItemIcon></ListItemIcon>
+            <ListItemText primary='All' />
+          </ListItem>
+          <ListItem
+            onClick={() => setSelectedCategory(null)}
+            sx={{
+              'backgroundColor': selectedCategory === null ? theme.palette.action.selected : 'inherit',
+              '&:hover': {
+                backgroundColor: theme.palette.action.hover,
+              },
+              'color': darkTheme.colours.defaultFont,
+              'cursor': 'pointer',
+            }}
+          >
+            <ListItemIcon>
+              <ColorSquare color={darkTheme.colours.cardBackground} />
+            </ListItemIcon>
+            <ListItemText primary='Uncategorised' />
+          </ListItem>
           {categories?.map((category) => (
             <ListItem
               key={category.id}
@@ -62,13 +92,15 @@ const Categorise = () => {
       </Box>
       <Box flex='1' pt={3} pr={2}>
         <Table>
-          {transactionSummaries?.map((tx) => (
-            <Table.Row key={tx.id}>
-              <Table.Cell>{tx.description}</Table.Cell>
-              <Table.Cell>{tx.totalDebit}</Table.Cell>
-              <Table.Cell>{tx.totalFrequency}</Table.Cell>
-            </Table.Row>
-          ))}
+          {transactionSummaries
+            ?.filter((tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory)
+            .map((tx) => (
+              <Table.Row key={tx.id}>
+                <Table.Cell>{tx.description}</Table.Cell>
+                <Table.Cell>{tx.totalDebit}</Table.Cell>
+                <Table.Cell>{tx.totalFrequency}</Table.Cell>
+              </Table.Row>
+            ))}
         </Table>
       </Box>
       {isAddCategoryModalOpen && <AddCategoryModal handleClose={handleCloseAddCategoryModal} />}
