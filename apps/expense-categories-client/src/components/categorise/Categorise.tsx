@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Table, Button, ControlLine, Heading, Spacer } from '@dtdot/lego';
-import { Box, List } from '@mui/material';
+import { Box, List, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import CategoryListItem from './CategoryListItem';
 
@@ -63,9 +64,9 @@ const Categorise = () => {
         <Box display='flex' justifyContent='space-between' alignItems='center' p={2}>
           <Heading.SubHeading>{selectedCategoryName}</Heading.SubHeading>
           {selectedCategory && selectedCategory !== 'all' && (
-            <Button variant='secondary' onClick={handleEditCategory}>
-              Edit Category
-            </Button>
+            <IconButton onClick={handleEditCategory}>
+              <EditIcon />
+            </IconButton>
           )}
         </Box>
         <Spacer size='1x' />
