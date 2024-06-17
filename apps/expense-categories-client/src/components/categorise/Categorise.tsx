@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
-import { Table, Button, ControlLine } from '@dtdot/lego';
+import { Table, Button, ControlLine, Heading, Spacer } from '@dtdot/lego';
 import { Box, List } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import CategoryListItem from './CategoryListItem';
@@ -19,26 +19,18 @@ const Categorise = () => {
     setAddCategoryModalOpen(false);
   };
 
-  const selectedCategoryName = selectedCategory === 'all'
-    ? 'All'
-    : selectedCategory === null
-    ? 'Uncategorised'
-    : categories?.find((category) => category.id === selectedCategory)?.name || 'Unknown';
+  const selectedCategoryName =
+    selectedCategory === 'all'
+      ? 'All'
+      : selectedCategory === null
+        ? 'Uncategorised'
+        : categories?.find((category) => category.id === selectedCategory)?.name || 'Unknown';
 
   const handleEditCategory = () => {
     setAddCategoryModalOpen(true);
   };
 
   return (
-    <Box display='flex' flexDirection='column'>
-      <Box display='flex' justifyContent='space-between' alignItems='center' p={2}>
-        <h2>{selectedCategoryName}</h2>
-        {selectedCategory && selectedCategory !== 'all' && (
-          <Button variant='secondary' onClick={handleEditCategory}>
-            Edit Category
-          </Button>
-        )}
-      </Box>
     <Box display='flex'>
       <Box width='350px' p={2}>
         <List>
@@ -67,8 +59,17 @@ const Categorise = () => {
           </Button>
         </ControlLine>
       </Box>
-      <Box flex='1' pt={3} pr={2}>
-        <Table mt={2}>
+      <Box flex='1' pr={2} pt={1}>
+        <Box display='flex' justifyContent='space-between' alignItems='center' p={2}>
+          <Heading.SubHeading>{selectedCategoryName}</Heading.SubHeading>
+          {selectedCategory && selectedCategory !== 'all' && (
+            <Button variant='secondary' onClick={handleEditCategory}>
+              Edit Category
+            </Button>
+          )}
+        </Box>
+        <Spacer size='1x' />
+        <Table>
           {transactionSummaries
             ?.filter((tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory)
             .map((tx) => (
