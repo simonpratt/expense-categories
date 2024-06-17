@@ -5,7 +5,7 @@ import { Table, Button, ControlLine } from '@dtdot/lego';
 import { Box, List, ListItem, ListItemText, ListItemIcon, useTheme } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import { styled } from '@mui/system';
-import { colorMapping } from '../../core/colorMapping';
+import CategoryListItem from './CategoryListItem';
 
 const Categorise = () => {
   const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
@@ -34,54 +34,23 @@ const Categorise = () => {
     <Box display='flex'>
       <Box width='350px' p={2}>
         <List>
-          <ListItem
+          <CategoryListItem
+            category={null}
+            selectedCategory={selectedCategory}
             onClick={() => setSelectedCategory('all')}
-            sx={{
-              'backgroundColor': selectedCategory === 'all' ? theme.palette.action.selected : 'inherit',
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-              },
-              'color': darkTheme.colours.defaultFont,
-              'cursor': 'pointer',
-            }}
-          >
-            <ListItemIcon></ListItemIcon>
-            <ListItemText primary='All' />
-          </ListItem>
-          <ListItem
+          />
+          <CategoryListItem
+            category={null}
+            selectedCategory={selectedCategory}
             onClick={() => setSelectedCategory(null)}
-            sx={{
-              'backgroundColor': selectedCategory === null ? theme.palette.action.selected : 'inherit',
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-              },
-              'color': darkTheme.colours.defaultFont,
-              'cursor': 'pointer',
-            }}
-          >
-            <ListItemIcon>
-              <ColorSquare color={darkTheme.colours.cardBackground} />
-            </ListItemIcon>
-            <ListItemText primary='Uncategorised' />
-          </ListItem>
+          />
           {categories?.map((category) => (
-            <ListItem
+            <CategoryListItem
               key={category.id}
+              category={category}
+              selectedCategory={selectedCategory}
               onClick={() => setSelectedCategory(category.id)}
-              sx={{
-                'backgroundColor': selectedCategory === category.id ? theme.palette.action.selected : 'inherit',
-                '&:hover': {
-                  backgroundColor: theme.palette.action.hover,
-                },
-                'color': darkTheme.colours.defaultFont,
-                'cursor': 'pointer',
-              }}
-            >
-              <ListItemIcon>
-                <ColorSquare color={colorMapping[category.colour]} />
-              </ListItemIcon>
-              <ListItemText primary={category.name} />
-            </ListItem>
+            />
           ))}
         </List>
         <ControlLine>
