@@ -19,7 +19,26 @@ const Categorise = () => {
     setAddCategoryModalOpen(false);
   };
 
+  const selectedCategoryName = selectedCategory === 'all'
+    ? 'All'
+    : selectedCategory === null
+    ? 'Uncategorised'
+    : categories?.find((category) => category.id === selectedCategory)?.name || 'Unknown';
+
+  const handleEditCategory = () => {
+    setAddCategoryModalOpen(true);
+  };
+
   return (
+    <Box display='flex' flexDirection='column'>
+      <Box display='flex' justifyContent='space-between' alignItems='center' p={2}>
+        <h2>{selectedCategoryName}</h2>
+        {selectedCategory && selectedCategory !== 'all' && (
+          <Button variant='secondary' onClick={handleEditCategory}>
+            Edit Category
+          </Button>
+        )}
+      </Box>
     <Box display='flex'>
       <Box width='350px' p={2}>
         <List>
@@ -49,7 +68,7 @@ const Categorise = () => {
         </ControlLine>
       </Box>
       <Box flex='1' pt={3} pr={2}>
-        <Table>
+        <Table mt={2}>
           {transactionSummaries
             ?.filter((tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory)
             .map((tx) => (
