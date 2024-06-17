@@ -7,12 +7,8 @@ import AddCategoryModal from '../modals/AddCategoryModal';
 import styled, { useTheme } from 'styled-components';
 import EditCategoryModal from '../modals/EditCategoryModal';
 import CategoryList from './CategoryList';
+import CategoryHeader from './CategoryHeader';
 
-const CustomHeading = styled(Heading.SubHeading)`
-  height: 40px;
-  display: flex;
-  align-items: center;
-`;
 
 const Categorise = () => {
   const theme = useTheme() as any;
@@ -49,17 +45,11 @@ const Categorise = () => {
         setAddModalOpen={setAddModalOpen}
       />
       <Box flex='1' pr={2} pt={1}>
-        <Box display='flex' alignItems='center' p={2}>
-          <CustomHeading>{selectedCategoryName}</CustomHeading>
-          {selectedCategory && selectedCategory !== 'all' && (
-            <IconButton
-              onClick={() => setEditModalOpen(true)}
-              style={{ marginLeft: '8px', color: theme.colours.defaultFont }}
-            >
-              <EditIcon />
-            </IconButton>
-          )}
-        </Box>
+        <CategoryHeader
+          selectedCategoryName={selectedCategoryName}
+          selectedCategory={selectedCategory}
+          setEditModalOpen={setEditModalOpen}
+        />
         <Spacer size='1x' />
         <Table>
           {transactionSummaries
