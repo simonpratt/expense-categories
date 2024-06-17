@@ -5,31 +5,36 @@ import { Box, List, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import CategoryListItem from './CategoryListItem';
+import styled, { useTheme } from 'styled-components';
+import EditCategoryModal from '../modals/EditCategoryModal';
+
+const CustomHeading = styled(Heading.SubHeading)`
+  height: 40px;
+  display: flex;
+  align-items: center;
+`;
 
 const Categorise = () => {
+  const theme = useTheme() as any;
   const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
-  const [isAddCategoryModalOpen, setAddCategoryModalOpen] = useState(false);
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const handleOpenAddCategoryModal = () => {
-    setAddCategoryModalOpen(true);
-  };
+  const selectedCategoryObj = categories?.find((category) => category.id === selectedCategory);
 
-  const handleCloseAddCategoryModal = () => {
-    setAddCategoryModalOpen(false);
-  };
-
-  const selectedCategoryName =
-    selectedCategory === 'all'
-      ? 'All'
-      : selectedCategory === null
-        ? 'Uncategorised'
-        : categories?.find((category) => category.id === selectedCategory)?.name || 'Unknown';
-
-  const handleEditCategory = () => {
-    setAddCategoryModalOpen(true);
-  };
+  let selectedCategoryName: string;
+  switch (selectedCategory) {
+    case 'all':
+      selectedCategoryName = 'All';
+      break;
+    case null:
+      selectedCategoryName = 'Uncategorised';
+      break;
+    default:
+      selectedCategoryName = selectedCategoryObj?.name || 'Unknown';
+  }
 
   return (
     <Box display='flex'>
@@ -45,26 +50,31 @@ const Categorise = () => {
             selectedCategory={selectedCategory}
             onClick={() => setSelectedCategory(null)}
           />
-          {categories?.map((category) => (
-            <CategoryListItem
-              key={category.id}
-              category={category}
-              selectedCategory={selectedCategory}
-              onClick={() => setSelectedCategory(category.id)}
-            />
-          ))}
+          {categories
+            ?.sort((a, b) => a.name.localeCompare(b.name))
+            .map((category) => (
+              <CategoryListItem
+                key={category.id}
+                category={category}
+                selectedCategory={selectedCategory}
+                onClick={() => setSelectedCategory(category.id)}
+              />
+            ))}
         </List>
         <ControlLine>
-          <Button variant='tertiary' onClick={handleOpenAddCategoryModal}>
+          <Button variant='tertiary' onClick={() => setAddModalOpen(true)}>
             Add Category
           </Button>
         </ControlLine>
       </Box>
       <Box flex='1' pr={2} pt={1}>
         <Box display='flex' alignItems='center' p={2}>
-          <Heading.SubHeading>{selectedCategoryName}</Heading.SubHeading>
+          <CustomHeading>{selectedCategoryName}</CustomHeading>
           {selectedCategory && selectedCategory !== 'all' && (
-            <IconButton onClick={handleEditCategory} style={{ marginLeft: '8px' }}>
+            <IconButton
+              onClick={() => setEditModalOpen(true)}
+              style={{ marginLeft: '8px', color: theme.colours.defaultFont }}
+            >
               <EditIcon />
             </IconButton>
           )}
@@ -84,7 +94,10 @@ const Categorise = () => {
             ))}
         </Table>
       </Box>
-      {isAddCategoryModalOpen && <AddCategoryModal handleClose={handleCloseAddCategoryModal} />}
+      {isAddModalOpen && <AddCategoryModal handleClose={() => setAddModalOpen(false)} />}
+      {isEditModalOpen && selectedCategoryObj && (
+        <EditCategoryModal category={selectedCategoryObj} handleClose={() => setEditModalOpen(false)} />
+      )}
     </Box>
   );
 };
