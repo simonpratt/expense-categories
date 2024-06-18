@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Table, Spacer, Loader } from '@dtdot/lego';
-import { Box } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
 import CategoryList from './CategoryList';
@@ -47,20 +47,32 @@ const Categorise = () => {
           setEditModalOpen={setEditModalOpen}
         />
         <Spacer size='1x' />
-        <Table>
-          {transactionSummaries
-            ?.filter((tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory)
-            .map((tx) => (
-              <Table.Row key={tx.id}>
-                <Table.Cell>{tx.description}</Table.Cell>
-                <Table.Cell>
-                  {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tx.totalDebit)}
-                </Table.Cell>
-                <Table.Cell>{tx.totalFrequency}</Table.Cell>
-                <Table.ActionContainer>todo action goes here</Table.ActionContainer>
-              </Table.Row>
-            ))}
-        </Table>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Description</TableCell>
+                <TableCell>Total Debit</TableCell>
+                <TableCell>Total Frequency</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {transactionSummaries
+                ?.filter((tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory)
+                .map((tx) => (
+                  <TableRow key={tx.id}>
+                    <TableCell>{tx.description}</TableCell>
+                    <TableCell>
+                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tx.totalDebit)}
+                    </TableCell>
+                    <TableCell>{tx.totalFrequency}</TableCell>
+                    <TableCell>todo action goes here</TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
       {isAddModalOpen && <AddCategoryModal handleClose={() => setAddModalOpen(false)} />}
       {isEditModalOpen && selectedCategoryObj && (
