@@ -2,6 +2,8 @@ import React from 'react';
 import { BodyStyle, Themes } from '@dtdot/lego';
 import { ThemeProvider } from 'styled-components';
 import { NotificationProvider, Notifications } from '@dtdot/notifications';
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { DialoguesProvider } from '@dtdot/dialogues';
 import { TRPCProvider } from './core/tRPC.provider';
 
