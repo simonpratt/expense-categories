@@ -51,10 +51,10 @@ const Categorise = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Description</TableCell>
-                <TableCell>Total Debit</TableCell>
-                <TableCell>Total Frequency</TableCell>
-                <TableCell>Action</TableCell>
+                <TableCell sx={{ color: 'white', padding: '8px' }}>Description</TableCell>
+                <TableCell sx={{ color: 'white', padding: '8px' }}>Total Debit</TableCell>
+                <TableCell sx={{ color: 'white', padding: '8px' }}>Total Frequency</TableCell>
+                <TableCell sx={{ color: 'white', padding: '8px' }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -62,12 +62,12 @@ const Categorise = () => {
                 ?.filter((tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory)
                 .map((tx) => (
                   <TableRow key={tx.id}>
-                    <TableCell>{tx.description}</TableCell>
-                    <TableCell>
+                    <TableCell sx={{ color: 'white', padding: '8px' }}>{tx.description}</TableCell>
+                    <TableCell sx={{ color: 'white', padding: '8px' }}>
                       {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tx.totalDebit)}
                     </TableCell>
-                    <TableCell>{tx.totalFrequency}</TableCell>
-                    <TableCell>todo action goes here</TableCell>
+                    <TableCell sx={{ color: 'white', padding: '8px' }}>{tx.totalFrequency}</TableCell>
+                    <TableCell sx={{ color: 'white', padding: '8px' }}>todo action goes here</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
