@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
-import { Table, Spacer, Loader } from '@dtdot/lego';
+import { Spacer, Loader } from '@dtdot/lego';
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
@@ -47,7 +47,7 @@ const Categorise = () => {
           setEditModalOpen={setEditModalOpen}
         />
         <Spacer size='1x' />
-        <TableContainer component={Paper}>
+        <TableContainer>
           <Table>
             <TableHead>
               <TableRow>
