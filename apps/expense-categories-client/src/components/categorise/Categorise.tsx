@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Spacer, Loader } from '@dtdot/lego';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
 import CategoryList from './CategoryList';
@@ -51,10 +51,10 @@ const Categorise = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding='8px'>Description</TableCell>
-                <TableCell padding='8px'>Total Debit</TableCell>
-                <TableCell padding='8px'>Total Frequency</TableCell>
-                <TableCell padding='8px'>Action</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Total Debit</TableCell>
+                <TableCell>Total Frequency</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -62,12 +62,12 @@ const Categorise = () => {
                 ?.filter((tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory)
                 .map((tx) => (
                   <TableRow key={tx.id}>
-                    <TableCell padding='8px'>{tx.description}</TableCell>
-                    <TableCell padding='8px'>
+                    <TableCell>{tx.description}</TableCell>
+                    <TableCell>
                       {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tx.totalDebit)}
                     </TableCell>
-                    <TableCell padding='8px'>{tx.totalFrequency}</TableCell>
-                    <TableCell padding='8px'>todo action goes here</TableCell>
+                    <TableCell>{tx.totalFrequency}</TableCell>
+                    <TableCell>todo action goes here</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
