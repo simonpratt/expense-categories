@@ -39,6 +39,7 @@ const Categorise = () => {
     { width: 150, label: 'Total Debit', dataKey: 'totalDebit', numeric: true },
     { width: 150, label: 'Total Frequency', dataKey: 'totalFrequency', numeric: true },
     { width: 120, label: 'Action', dataKey: 'action' },
+    { width: 200, label: 'Category', dataKey: 'category' },
   ];
 
   const VirtuosoTableComponents: TableComponents<(typeof transactionSummaries)[number]> = {
@@ -69,7 +70,35 @@ const Categorise = () => {
     </TableRow>
   );
 
+  const handleCategoryChange = (transactionId: string, newCategoryId: string) => {
+    // Implement the logic to update the category of the transaction
+    console.log(`Transaction ID: ${transactionId}, New Category ID: ${newCategoryId}`);
+  };
+
   const rowContent = (_index: number, row: (typeof transactionSummaries)[number]) => (
+    <React.Fragment>
+      {columns.map((column) => (
+        <TableCell key={column.dataKey} align={column.numeric || false ? 'right' : 'left'}>
+          {column.dataKey === 'totalDebit'
+            ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row[column.dataKey])
+            : column.dataKey === 'category'
+            ? (
+              <select
+                value={row.spendingCategoryId || ''}
+                onChange={(e) => handleCategoryChange(row.id, e.target.value)}
+              >
+                <option value=''>Uncategorised</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            )
+            : row[column.dataKey as keyof typeof row]}
+        </TableCell>
+      ))}
+    </React.Fragment>
     <React.Fragment>
       {columns.map((column) => (
         <TableCell key={column.dataKey} align={column.numeric || false ? 'right' : 'left'}>
