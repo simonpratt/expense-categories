@@ -57,6 +57,7 @@ const Categorise = () => {
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tx.totalDebit)}
                 </Table.Cell>
                 <Table.Cell>{tx.totalFrequency}</Table.Cell>
+                <Table.ActionContainer>todo action goes here</Table.ActionContainer>
               </Table.Row>
             ))}
         </Table>
