@@ -21,6 +21,7 @@ import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
 import CategoryList from './CategoryList';
 import CategoryHeader from './CategoryHeader';
+import { useTransactionSummaries } from '../../hooks/useTransactionSummaries';
 import styled from 'styled-components';
 import { colorMapping } from '../../core/colorMapping';
 
@@ -35,7 +36,7 @@ const SelectNameDisplay = styled.span`
 `;
 
 const Categorise = () => {
-  const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
+  const { transactions: transactionSummaries, handleCategoryChange } = useTransactionSummaries();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
   const { mutate: assignCategory } = apiConnector.app.transactions.assignSpendingCategory.useMutation();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
@@ -97,9 +98,6 @@ const Categorise = () => {
     </TableRow>
   );
 
-  const handleCategoryChange = (transactionCategoryId: string, newCategoryId?: string) => {
-    assignCategory({ transactionCategoryId, spendingCategoryId: newCategoryId || undefined });
-  };
 
   const rowContent = (_index: number, row: (typeof transactionSummaries)[number]) => (
     <React.Fragment>
