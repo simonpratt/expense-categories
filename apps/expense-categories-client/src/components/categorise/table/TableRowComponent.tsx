@@ -1,8 +1,9 @@
 import React from 'react';
 import { TableRow, TableCell, Select, MenuItem, Box, ListItemIcon, ListItemText } from '@mui/material';
-import { colorMapping } from '../../core/colorMapping';
+import { colorMapping } from '../../../core/colorMapping';
 import styled from 'styled-components';
-import { SpendingCategory, TransactionSummary } from '../../core/api.types';
+import { SpendingCategory, TransactionSummary } from '../../../core/api.types';
+import { tableColumns } from './tableColumns';
 
 const ColorSquare = styled('div')(({ color }) => ({
   width: 20,
@@ -13,13 +14,6 @@ const ColorSquare = styled('div')(({ color }) => ({
 const SelectNameDisplay = styled.span`
   padding-left: 16px;
 `;
-
-const columns = [
-  { width: 200, label: 'Description', dataKey: 'description' },
-  { width: 150, label: 'Total Debit', dataKey: 'totalDebit', numeric: true },
-  { width: 150, label: 'Total Frequency', dataKey: 'totalFrequency', numeric: true },
-  { width: 200, label: 'Category', dataKey: 'category' },
-];
 
 interface TableRowComponentProps {
   'context': {
@@ -38,7 +32,7 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
 
   return (
     <TableRow {...props}>
-      {columns.map((column) => (
+      {tableColumns.map((column) => (
         <TableCell key={column.dataKey} align={column.numeric || false ? 'right' : 'left'}>
           {column.dataKey === 'totalDebit' ? (
             new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row[column.dataKey])

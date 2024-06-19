@@ -2,27 +2,16 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Spacer, Loader } from '@dtdot/lego';
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Select,
-  MenuItem,
-  Paper,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import { Box, Table, TableBody, TableContainer, TableHead, Paper } from '@mui/material';
 import { TableVirtuoso, TableComponents } from 'react-virtuoso';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
 import CategoryList from './CategoryList';
 import CategoryHeader from './CategoryHeader';
 import { useTransactionSummaries } from '../../hooks/useTransactionSummaries';
-import TableRowComponent from './TableRowComponent';
+import TableRowComponent from './table/TableRowComponent';
+import TableHeaderCell from './table/TableHeaderCell';
+import { TransactionSummary } from '../../core/api.types';
 
 const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
   Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
@@ -35,24 +24,6 @@ const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
     return <TableBody {...props} ref={ref} />;
   }),
 };
-
-const fixedHeaderContent = () => (
-  <TableRow>
-    {columns.map((column) => (
-      <TableCell
-        key={column.dataKey}
-        variant='head'
-        align={column.numeric || false ? 'right' : 'left'}
-        style={{ width: column.width }}
-        sx={{
-          backgroundColor: 'background.paper',
-        }}
-      >
-        {column.label}
-      </TableCell>
-    ))}
-  </TableRow>
-);
 
 const Categorise = () => {
   const { transactionSummaries, handleCategoryChange } = useTransactionSummaries();
@@ -102,7 +73,7 @@ const Categorise = () => {
           <TableVirtuoso
             data={renderedData}
             components={VirtuosoTableComponents}
-            fixedHeaderContent={fixedHeaderContent}
+            fixedHeaderContent={TableHeaderCell}
             style={{ height: '100%' }}
             context={{ transactionSummaries: renderedData, categories, handleCategoryChange }}
           />
