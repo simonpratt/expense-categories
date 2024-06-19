@@ -83,10 +83,10 @@ export const getAllTransactions = async () => {
   return prisma.transaction.findMany();
 };
 
-export const assignSpendingCategory = async (transactionCategoryId: string, spendingCategoryId: string) => {
+export const assignSpendingCategory = async (transactionCategoryId: string, spendingCategoryId?: string) => {
   const transactionCategory = await prisma.transactionCategory.update({
     where: { id: transactionCategoryId },
-    data: { spendingCategoryId },
+    data: { spendingCategoryId: spendingCategoryId || null },
   });
   return transactionCategory;
 };

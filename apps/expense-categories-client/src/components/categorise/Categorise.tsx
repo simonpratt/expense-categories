@@ -16,12 +16,23 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import CategoryIcon from '../core/CategoryIcon';
 import { TableVirtuoso, TableComponents } from 'react-virtuoso';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
 import CategoryList from './CategoryList';
 import CategoryHeader from './CategoryHeader';
+import styled from 'styled-components';
+import { colorMapping } from '../../core/colorMapping';
+
+const ColorSquare = styled('div')(({ color }) => ({
+  width: 20,
+  height: 20,
+  backgroundColor: color,
+}));
+
+const SelectNameDisplay = styled.span`
+  padding-left: 16px;
+`;
 
 const Categorise = () => {
   const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
@@ -86,8 +97,8 @@ const Categorise = () => {
     </TableRow>
   );
 
-  const handleCategoryChange = (transactionCategoryId: string, newCategoryId: string) => {
-    assignCategory({ transactionCategoryId, spendingCategoryId: newCategoryId });
+  const handleCategoryChange = (transactionCategoryId: string, newCategoryId?: string) => {
+    assignCategory({ transactionCategoryId, spendingCategoryId: newCategoryId || undefined });
   };
 
   const rowContent = (_index: number, row: (typeof transactionSummaries)[number]) => (
@@ -99,29 +110,29 @@ const Categorise = () => {
           ) : column.dataKey === 'category' ? (
             <Select
               value={row.spendingCategoryId || ''}
-              onChange={(e) => handleCategoryChange(row.id, e.target.value as string)}
+              onChange={(e) => handleCategoryChange(row.id, e.target.value)}
               displayEmpty
               fullWidth
               renderValue={(selected) => {
-                const selectedCategory = categories.find(category => category.id === selected);
+                const selectedCategory = categories.find((category) => category.id === selected);
                 return (
-                  <Box display="flex" alignItems="center">
-                    {selectedCategory && <CategoryIcon color={selectedCategory.color} />}
-                    <span>{selectedCategory ? selectedCategory.name : 'Uncategorised'}</span>
+                  <Box display='flex' alignItems='center'>
+                    <ColorSquare color={selectedCategory ? colorMapping[selectedCategory.colour] : 'grey'} />
+                    <SelectNameDisplay>{selectedCategory ? selectedCategory.name : 'Uncategorised'}</SelectNameDisplay>
                   </Box>
                 );
               }}
             >
               <MenuItem value=''>
                 <ListItemIcon>
-                  <CategoryIcon color="transparent" />
+                  <ColorSquare color='grey' />
                 </ListItemIcon>
-                <ListItemText primary="Uncategorised" />
+                <ListItemText primary='Uncategorised' />
               </MenuItem>
               {categories.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
                   <ListItemIcon>
-                    <CategoryIcon color={category.color} />
+                    <ColorSquare color={colorMapping[category.colour]} />
                   </ListItemIcon>
                   <ListItemText primary={category.name} />
                 </MenuItem>

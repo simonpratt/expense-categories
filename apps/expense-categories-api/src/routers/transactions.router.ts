@@ -28,7 +28,7 @@ const transactionsRouter = router({
     .input(
       z.object({
         transactionCategoryId: z.string(),
-        spendingCategoryId: z.string(),
+        spendingCategoryId: z.string().optional(),
       }),
     )
     .mutation(async ({ input }) => {
