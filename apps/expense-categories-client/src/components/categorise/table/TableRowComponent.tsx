@@ -37,7 +37,9 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
           {(() => {
             switch (column.dataKey) {
               case 'totalDebit':
-                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row[column.dataKey]);
+                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+                  row[column.dataKey],
+                );
               case 'category':
                 return (
                   <Select
@@ -50,7 +52,9 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                       return (
                         <Box display='flex' alignItems='center'>
                           <ColorSquare color={selectedCategory ? colorMapping[selectedCategory.colour] : 'grey'} />
-                          <SelectNameDisplay>{selectedCategory ? selectedCategory.name : 'Uncategorised'}</SelectNameDisplay>
+                          <SelectNameDisplay>
+                            {selectedCategory ? selectedCategory.name : 'Uncategorised'}
+                          </SelectNameDisplay>
                         </Box>
                       );
                     }}
