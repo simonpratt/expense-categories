@@ -36,7 +36,7 @@ const SelectNameDisplay = styled.span`
 `;
 
 const Categorise = () => {
-  const { transactions: transactionSummaries, handleCategoryChange } = useTransactionSummaries();
+  const { transactionSummaries, handleCategoryChange } = useTransactionSummaries();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -96,7 +96,6 @@ const Categorise = () => {
       ))}
     </TableRow>
   );
-
 
   const rowContent = (_index: number, row: (typeof transactionSummaries)[number]) => (
     <React.Fragment>
