@@ -24,6 +24,7 @@ import CategoryHeader from './CategoryHeader';
 import { useTransactionSummaries } from '../../hooks/useTransactionSummaries';
 import styled from 'styled-components';
 import { colorMapping } from '../../core/colorMapping';
+import { SpendingCategory, TransactionSummary } from '../../core/api.types';
 
 const ColorSquare = styled('div')(({ color }) => ({
   width: 20,
@@ -35,70 +36,30 @@ const SelectNameDisplay = styled.span`
   padding-left: 16px;
 `;
 
-const Categorise = () => {
-  const { transactionSummaries, handleCategoryChange } = useTransactionSummaries();
-  const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
-  const [isAddModalOpen, setAddModalOpen] = useState(false);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+const columns = [
+  { width: 200, label: 'Description', dataKey: 'description' },
+  { width: 150, label: 'Total Debit', dataKey: 'totalDebit', numeric: true },
+  { width: 150, label: 'Total Frequency', dataKey: 'totalFrequency', numeric: true },
+  { width: 200, label: 'Category', dataKey: 'category' },
+];
 
-  const selectedCategoryObj = categories?.find((category) => category.id === selectedCategory);
-
-  let selectedCategoryName: string;
-  switch (selectedCategory) {
-    case 'all':
-      selectedCategoryName = 'All';
-      break;
-    case null:
-      selectedCategoryName = 'Uncategorised';
-      break;
-    default:
-      selectedCategoryName = selectedCategoryObj?.name || 'Unknown';
-  }
-
-  if (!categories || !transactionSummaries) {
-    return <Loader variant='page-loader' />;
-  }
-
-  const columns = [
-    { width: 200, label: 'Description', dataKey: 'description' },
-    { width: 150, label: 'Total Debit', dataKey: 'totalDebit', numeric: true },
-    { width: 150, label: 'Total Frequency', dataKey: 'totalFrequency', numeric: true },
-    { width: 200, label: 'Category', dataKey: 'category' },
-  ];
-
-  const VirtuosoTableComponents: TableComponents<(typeof transactionSummaries)[number]> = {
-    Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
-      return <TableContainer component={Paper} {...props} ref={ref} />;
-    }),
-    Table: (props) => <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />,
-    TableHead: TableHead as any,
-    TableRow: (props) => <TableRow {...props} />,
-    TableBody: React.forwardRef<HTMLTableSectionElement>(function TBody(props, ref) {
-      return <TableBody {...props} ref={ref} />;
-    }),
+interface TableRowComponentProps {
+  'context': {
+    categories: SpendingCategory[];
+    transactionSummaries: TransactionSummary[];
+    handleCategoryChange: (a: string, b: string) => void;
   };
+  'data-index': number;
+}
 
-  const fixedHeaderContent = () => (
-    <TableRow>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          variant='head'
-          align={column.numeric || false ? 'right' : 'left'}
-          style={{ width: column.width }}
-          sx={{
-            backgroundColor: 'background.paper',
-          }}
-        >
-          {column.label}
-        </TableCell>
-      ))}
-    </TableRow>
-  );
+const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
+  console.log(context);
+  const { categories, handleCategoryChange } = context;
+  const index = props['data-index'];
+  const row = context.transactionSummaries[index];
 
-  const rowContent = (_index: number, row: (typeof transactionSummaries)[number]) => (
-    <React.Fragment>
+  return (
+    <TableRow {...props}>
       {columns.map((column) => (
         <TableCell key={column.dataKey} align={column.numeric || false ? 'right' : 'left'}>
           {column.dataKey === 'totalDebit' ? (
@@ -139,8 +100,70 @@ const Categorise = () => {
           )}
         </TableCell>
       ))}
-    </React.Fragment>
+    </TableRow>
   );
+};
+
+const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
+  Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
+    return <TableContainer component={Paper} {...props} ref={ref} />;
+  }),
+  Table: (props) => <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />,
+  TableHead: TableHead as any,
+  TableRow: TableRowComponent as any,
+  TableBody: React.forwardRef<HTMLTableSectionElement>(function TBody(props, ref) {
+    return <TableBody {...props} ref={ref} />;
+  }),
+};
+
+const fixedHeaderContent = () => (
+  <TableRow>
+    {columns.map((column) => (
+      <TableCell
+        key={column.dataKey}
+        variant='head'
+        align={column.numeric || false ? 'right' : 'left'}
+        style={{ width: column.width }}
+        sx={{
+          backgroundColor: 'background.paper',
+        }}
+      >
+        {column.label}
+      </TableCell>
+    ))}
+  </TableRow>
+);
+
+const Categorise = () => {
+  const { transactionSummaries, handleCategoryChange } = useTransactionSummaries();
+  const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const selectedCategoryObj = categories?.find((category) => category.id === selectedCategory);
+
+  let selectedCategoryName: string;
+  switch (selectedCategory) {
+    case 'all':
+      selectedCategoryName = 'All';
+      break;
+    case null:
+      selectedCategoryName = 'Uncategorised';
+      break;
+    default:
+      selectedCategoryName = selectedCategoryObj?.name || 'Unknown';
+  }
+
+  if (!categories || !transactionSummaries) {
+    return <Loader variant='page-loader' />;
+  }
+
+  const renderedData = transactionSummaries.filter(
+    (tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory,
+  );
+
+  console.log(renderedData);
 
   return (
     <Box display='flex'>
@@ -159,13 +182,11 @@ const Categorise = () => {
         <Spacer size='1x' />
         <div style={{ width: '100%', height: 'calc(100vh - 140px)' }}>
           <TableVirtuoso
-            data={transactionSummaries.filter(
-              (tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory,
-            )}
+            data={renderedData}
             components={VirtuosoTableComponents}
             fixedHeaderContent={fixedHeaderContent}
-            itemContent={rowContent}
             style={{ height: '100%' }}
+            context={{ transactionSummaries: renderedData, categories, handleCategoryChange }}
           />
         </div>
       </Box>
