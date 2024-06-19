@@ -1,8 +1,19 @@
 // my-table.ts
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
-import { Spacer, Loader, Themes } from '@dtdot/lego';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem } from '@mui/material';
+import { Spacer, Loader } from '@dtdot/lego';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Select,
+  MenuItem,
+  Paper,
+} from '@mui/material';
 import { TableVirtuoso, TableComponents } from 'react-virtuoso';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
@@ -39,13 +50,12 @@ const Categorise = () => {
     { width: 200, label: 'Description', dataKey: 'description' },
     { width: 150, label: 'Total Debit', dataKey: 'totalDebit', numeric: true },
     { width: 150, label: 'Total Frequency', dataKey: 'totalFrequency', numeric: true },
-    { width: 120, label: 'Action', dataKey: 'action' },
     { width: 200, label: 'Category', dataKey: 'category' },
   ];
 
   const VirtuosoTableComponents: TableComponents<(typeof transactionSummaries)[number]> = {
     Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
-      return <TableContainer {...props} ref={ref} />;
+      return <TableContainer component={Paper} {...props} ref={ref} />;
     }),
     Table: (props) => <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />,
     TableHead: TableHead as any,
@@ -63,7 +73,9 @@ const Categorise = () => {
           variant='head'
           align={column.numeric || false ? 'right' : 'left'}
           style={{ width: column.width }}
-          sx={{ backgroundColor: Themes.dark.colours.background }}
+          sx={{
+            backgroundColor: 'background.paper',
+          }}
         >
           {column.label}
         </TableCell>

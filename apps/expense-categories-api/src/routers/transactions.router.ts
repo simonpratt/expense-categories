@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { router, authenticatedProcedure } from '../core/trpc.base';
-import { addManyTransactions, getTransactionCategories } from '../services/transaction.service';
+import { addManyTransactions, assignSpendingCategory, getTransactionCategories } from '../services/transaction.service';
 
 const transactionsRouter = router({
   getSummary: authenticatedProcedure.query(() => {
@@ -23,6 +23,16 @@ const transactionsRouter = router({
     )
     .mutation(async ({ input }) => {
       return addManyTransactions(input.transactions);
+    }),
+  assignSpendingCategory: authenticatedProcedure
+    .input(
+      z.object({
+        transactionCategoryId: z.string(),
+        spendingCategoryId: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return assignSpendingCategory(input.transactionCategoryId, input.spendingCategoryId);
     }),
 });
 

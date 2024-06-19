@@ -15,6 +15,13 @@ const theme = createTheme({
     text: {
       primary: Themes.dark.colours.defaultFont,
     },
+    background: {
+      paper: Themes.dark.colours.cardBackground,
+    },
+    action: {
+      focus: Themes.dark.colours.controlBorderFocus,
+      hover: Themes.dark.colours.controlBorderHover,
+    },
   },
 });
 
