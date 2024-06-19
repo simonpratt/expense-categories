@@ -38,7 +38,6 @@ const SelectNameDisplay = styled.span`
 const Categorise = () => {
   const { transactions: transactionSummaries, handleCategoryChange } = useTransactionSummaries();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
-  const { mutate: assignCategory } = apiConnector.app.transactions.assignSpendingCategory.useMutation();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
