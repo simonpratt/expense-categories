@@ -13,7 +13,10 @@ import {
   Select,
   MenuItem,
   Paper,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
+import CategoryIcon from '../core/CategoryIcon';
 import { TableVirtuoso, TableComponents } from 'react-virtuoso';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
