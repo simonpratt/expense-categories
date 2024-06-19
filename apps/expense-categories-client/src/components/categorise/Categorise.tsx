@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Spacer, Loader, Themes } from '@dtdot/lego';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem } from '@mui/material';
 import { TableVirtuoso, TableComponents } from 'react-virtuoso';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
@@ -82,14 +82,19 @@ const Categorise = () => {
           {column.dataKey === 'totalDebit' ? (
             new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row[column.dataKey])
           ) : column.dataKey === 'category' ? (
-            <select value={row.spendingCategoryId || ''} onChange={(e) => handleCategoryChange(row.id, e.target.value)}>
-              <option value=''>Uncategorised</option>
+            <Select
+              value={row.spendingCategoryId || ''}
+              onChange={(e) => handleCategoryChange(row.id, e.target.value as string)}
+              displayEmpty
+              fullWidth
+            >
+              <MenuItem value=''>Uncategorised</MenuItem>
               {categories.map((category) => (
-                <option key={category.id} value={category.id}>
+                <MenuItem key={category.id} value={category.id}>
                   {category.name}
-                </option>
+                </MenuItem>
               ))}
-            </select>
+            </Select>
           ) : (
             row[column.dataKey as keyof typeof row]
           )}
