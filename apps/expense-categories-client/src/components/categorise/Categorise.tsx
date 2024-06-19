@@ -163,8 +163,6 @@ const Categorise = () => {
     (tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory,
   );
 
-  console.log(renderedData);
-
   return (
     <Box display='flex'>
       <CategoryList
