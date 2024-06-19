@@ -12,6 +12,7 @@ import CategoryHeader from './CategoryHeader';
 const Categorise = () => {
   const { data: transactionSummaries } = apiConnector.app.transactions.getSummary.useQuery();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
+  const { mutate: assignCategory } = apiConnector.app.transactions.assignSpendingCategory.useMutation();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -70,41 +71,28 @@ const Categorise = () => {
     </TableRow>
   );
 
-  const handleCategoryChange = (transactionId: string, newCategoryId: string) => {
-    // Implement the logic to update the category of the transaction
-    console.log(`Transaction ID: ${transactionId}, New Category ID: ${newCategoryId}`);
+  const handleCategoryChange = (transactionCategoryId: string, newCategoryId: string) => {
+    assignCategory({ transactionCategoryId, spendingCategoryId: newCategoryId });
   };
 
   const rowContent = (_index: number, row: (typeof transactionSummaries)[number]) => (
     <React.Fragment>
       {columns.map((column) => (
         <TableCell key={column.dataKey} align={column.numeric || false ? 'right' : 'left'}>
-          {column.dataKey === 'totalDebit'
-            ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row[column.dataKey])
-            : column.dataKey === 'category'
-            ? (
-              <select
-                value={row.spendingCategoryId || ''}
-                onChange={(e) => handleCategoryChange(row.id, e.target.value)}
-              >
-                <option value=''>Uncategorised</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            )
-            : row[column.dataKey as keyof typeof row]}
-        </TableCell>
-      ))}
-    </React.Fragment>
-    <React.Fragment>
-      {columns.map((column) => (
-        <TableCell key={column.dataKey} align={column.numeric || false ? 'right' : 'left'}>
-          {column.dataKey === 'totalDebit'
-            ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row[column.dataKey])
-            : row[column.dataKey as keyof typeof row]}
+          {column.dataKey === 'totalDebit' ? (
+            new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(row[column.dataKey])
+          ) : column.dataKey === 'category' ? (
+            <select value={row.spendingCategoryId || ''} onChange={(e) => handleCategoryChange(row.id, e.target.value)}>
+              <option value=''>Uncategorised</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            row[column.dataKey as keyof typeof row]
+          )}
         </TableCell>
       ))}
     </React.Fragment>
