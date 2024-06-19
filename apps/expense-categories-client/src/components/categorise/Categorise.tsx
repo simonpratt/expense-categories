@@ -99,11 +99,28 @@ const Categorise = () => {
               onChange={(e) => handleCategoryChange(row.id, e.target.value as string)}
               displayEmpty
               fullWidth
+              renderValue={(selected) => {
+                const selectedCategory = categories.find(category => category.id === selected);
+                return (
+                  <Box display="flex" alignItems="center">
+                    {selectedCategory && <CategoryIcon color={selectedCategory.color} />}
+                    <span>{selectedCategory ? selectedCategory.name : 'Uncategorised'}</span>
+                  </Box>
+                );
+              }}
             >
-              <MenuItem value=''>Uncategorised</MenuItem>
+              <MenuItem value=''>
+                <ListItemIcon>
+                  <CategoryIcon color="transparent" />
+                </ListItemIcon>
+                <ListItemText primary="Uncategorised" />
+              </MenuItem>
               {categories.map((category) => (
                 <MenuItem key={category.id} value={category.id}>
-                  {category.name}
+                  <ListItemIcon>
+                    <CategoryIcon color={category.color} />
+                  </ListItemIcon>
+                  <ListItemText primary={category.name} />
                 </MenuItem>
               ))}
             </Select>
