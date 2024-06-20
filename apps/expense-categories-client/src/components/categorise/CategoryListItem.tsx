@@ -36,20 +36,14 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedC
     >
       <ListItemIcon>{!!category.colour && <ColorSquare color={colorMapping[category.colour]} />}</ListItemIcon>
       <ListItemText
-        primary={category ? category.name : 'Uncategorised'}
-        secondary={
-          totalDebit
-            ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDebit)
-            : undefined
-        }
         primary={
           <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
             <span>{category ? category.name : 'Uncategorised'}</span>
-            {totalDebit && (
-              <span style={{ textAlign: 'right' }}>
+            {totalDebit ? (
+              <span style={{ textAlign: 'right', color: theme.palette.text.secondary }}>
                 {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDebit)}
               </span>
-            )}
+            ) : null}
           </div>
         }
       />
