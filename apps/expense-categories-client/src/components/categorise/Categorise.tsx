@@ -61,6 +61,8 @@ const Categorise = () => {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         setAddModalOpen={setAddModalOpen}
+        transactionSummaries={transactionSummaries}
+        transactionSummaries={transactionSummaries}
       />
       <Box flex='1' pr={2} pt={1} display='flex' flexDirection='column'>
         <CategoryHeader
