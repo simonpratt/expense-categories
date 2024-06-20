@@ -45,13 +45,13 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
   };
 
   return (
-    <Box display='flex' alignItems='center' p={2}>
+    <Box display='flex' alignItems='center' justifyContent='space-between' p={2}>
       <CustomHeading>{selectedCategoryName}</CustomHeading>
       {selectedCategory && selectedCategory !== 'all' && (
         <>
           <IconButton
             onClick={handleMenuOpen}
-            style={{ marginLeft: '8px', color: theme.colours.defaultFont }}
+            style={{ color: theme.colours.defaultFont }}
           >
             <MoreVertIcon />
           </IconButton>
@@ -59,6 +59,14 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
           >
             <MenuItem onClick={handleEditCategory}>Edit Category</MenuItem>
             <MenuItem onClick={handleDeleteCategory}>Delete Category</MenuItem>
