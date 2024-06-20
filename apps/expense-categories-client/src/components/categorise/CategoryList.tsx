@@ -26,11 +26,13 @@ const CategoryList: React.FC<CategoryListProps> = ({
           onClick={() => setSelectedCategory('all')}
           totalDebit={categories.reduce((sum, category) => sum + category.debitAmount, 0)}
           totalDebit={categories.reduce((sum, category) => sum + category.debitAmount, 0)}
+          totalDebit={categories.reduce((sum, category) => sum + category.debitAmount, 0)}
         />
         <CategoryListItem
           category={{ id: null, name: 'Uncategorised', colour: 'grey' }}
           selectedCategory={selectedCategory}
           onClick={() => setSelectedCategory(null)}
+          totalDebit={categories.filter(category => category.id === null).reduce((sum, category) => sum + category.debitAmount, 0)}
           totalDebit={categories.filter(category => category.id === null).reduce((sum, category) => sum + category.debitAmount, 0)}
           totalDebit={categories.filter(category => category.id === null).reduce((sum, category) => sum + category.debitAmount, 0)}
         />
@@ -42,6 +44,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
               category={category}
               selectedCategory={selectedCategory}
               onClick={() => setSelectedCategory(category.id)}
+              totalDebit={category.debitAmount}
               totalDebit={category.debitAmount}
               totalDebit={category.debitAmount}
             />
