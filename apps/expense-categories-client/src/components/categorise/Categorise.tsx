@@ -27,7 +27,8 @@ const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
 
 const Categorise = () => {
   const { transactionSummaries, handleCategoryChange, handleIgnore } = useTransactionSummaries();
-  const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
+  const { data: categories, refetch: refetchCategories } = apiConnector.app.categories.getCategories.useQuery();
+  const deleteCategory = apiConnector.app.categories.deleteCategory.useMutation();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -45,6 +46,19 @@ const Categorise = () => {
     default:
       selectedCategoryName = selectedCategoryObj?.name || 'Unknown';
   }
+
+  const handleDeleteCategory = async () => {
+    if (selectedCategory && selectedCategory !== 'all' && selectedCategory !== 'ignored') {
+      try {
+        await deleteCategory.mutateAsync({ id: selectedCategory });
+        await refetchCategories();
+        setSelectedCategory(null);
+      } catch (error) {
+        console.error('Failed to delete category:', error);
+        // You might want to show an error message to the user here
+      }
+    }
+  };
 
   if (!categories || !transactionSummaries) {
     return <Loader variant='page-loader' />;
@@ -74,6 +88,7 @@ const Categorise = () => {
           selectedCategoryName={selectedCategoryName}
           selectedCategory={selectedCategory}
           setEditModalOpen={setEditModalOpen}
+          onDeleteCategory={handleDeleteCategory}
         />
         <Spacer size='1x' />
         <div style={{ width: '100%', height: 'calc(100vh - 140px)' }}>
