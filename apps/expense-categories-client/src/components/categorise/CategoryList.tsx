@@ -18,7 +18,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
   setAddModalOpen,
 }) => {
   return (
-    <Box width='350px' p={2}>
+    <Box width='400px' p={2}>
       <List>
         <CategoryListItem
           category={{ id: 'all', name: 'All', colour: null }}
