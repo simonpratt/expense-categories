@@ -42,8 +42,16 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedC
             ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDebit)
             : undefined
         }
-        primaryTypographyProps={{ style: { display: 'flex', justifyContent: 'space-between' } }}
-        secondaryTypographyProps={{ style: { textAlign: 'right', width: '100%' } }}
+        primary={
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+            <span>{category ? category.name : 'Uncategorised'}</span>
+            {totalDebit && (
+              <span style={{ textAlign: 'right' }}>
+                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDebit)}
+              </span>
+            )}
+          </div>
+        }
       />
     </ListItem>
   );
