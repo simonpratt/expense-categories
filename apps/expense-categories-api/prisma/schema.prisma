@@ -25,6 +25,7 @@ model TransactionCategory {
   totalCredit        Float
   totalDebit         Float
   totalFrequency     Float
+  ignored            Boolean           @default(false)
   spendingCategoryId String?
   SpendingCategory   SpendingCategory? @relation(fields: [spendingCategoryId], references: [id])
   Transaction        Transaction[]

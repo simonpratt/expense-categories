@@ -21,14 +21,15 @@ interface TableRowComponentProps {
   'context': {
     categories: SpendingCategory[];
     transactionSummaries: TransactionSummary[];
-    handleCategoryChange: (a: string, b: string) => void;
+    handleCategoryChange: (transactionSummaryId: string, spendingCategoryId: string) => void;
+    handleIgnore: (transactionSummaryId: string) => void;
   };
   'data-index': number;
 }
 
 const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
   const theme = useTheme();
-  const { categories, handleCategoryChange } = context;
+  const { categories, handleCategoryChange, handleIgnore } = context;
   const index = props['data-index'];
   const row = context.transactionSummaries[index];
 
@@ -46,7 +47,9 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                 return (
                   <Select
                     value={row.spendingCategoryId || ''}
-                    onChange={(e) => handleCategoryChange(row.id, e.target.value)}
+                    onChange={(e) =>
+                      e.target.value === 'ignore' ? handleIgnore(row.id) : handleCategoryChange(row.id, e.target.value)
+                    }
                     displayEmpty
                     fullWidth
                     renderValue={(selected) => {

@@ -26,7 +26,7 @@ const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
 };
 
 const Categorise = () => {
-  const { transactionSummaries, handleCategoryChange } = useTransactionSummaries();
+  const { transactionSummaries, handleCategoryChange, handleIgnore } = useTransactionSummaries();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -50,9 +50,15 @@ const Categorise = () => {
     return <Loader variant='page-loader' />;
   }
 
-  const renderedData = transactionSummaries.filter(
-    (tx) => selectedCategory === 'all' || tx.spendingCategoryId === selectedCategory,
-  );
+  const renderedData = transactionSummaries.filter((tx) => {
+    if (selectedCategory === 'all') {
+      return !tx.ignored;
+    }
+    if (selectedCategory === 'ignored') {
+      return tx.ignored;
+    }
+    return !tx.ignored && tx.spendingCategoryId === selectedCategory;
+  });
 
   return (
     <Box display='flex'>
@@ -76,7 +82,7 @@ const Categorise = () => {
             components={VirtuosoTableComponents}
             fixedHeaderContent={TableHeaderCell}
             style={{ height: '100%' }}
-            context={{ transactionSummaries: renderedData, categories, handleCategoryChange }}
+            context={{ transactionSummaries: renderedData, categories, handleCategoryChange, handleIgnore }}
           />
         </div>
       </Box>

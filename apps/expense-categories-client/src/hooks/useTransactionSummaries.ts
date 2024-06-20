@@ -5,6 +5,7 @@ import { TransactionSummary } from '../core/api.types';
 export const useTransactionSummaries = () => {
   const { data: _transactionSummaries, refetch } = apiConnector.app.transactions.getSummary.useQuery();
   const { mutate: assignCategory } = apiConnector.app.transactions.assignSpendingCategory.useMutation();
+  const { mutate: ignoreTransactionSummary } = apiConnector.app.transactions.ignoreTransactionSummary.useMutation();
   const [transactionSummaries, setTransactionSummaries] = useState(_transactionSummaries || []);
 
   useEffect(() => {
@@ -30,9 +31,21 @@ export const useTransactionSummaries = () => {
     );
   };
 
+  const handleIgnore = (transactionCategoryId: string) => {
+    ignoreTransactionSummary(
+      { transactionCategoryId },
+      {
+        onSuccess: (updatedTransaction) => {
+          updateTransactionSummary(updatedTransaction);
+        },
+      },
+    );
+  };
+
   return {
     transactionSummaries,
     handleCategoryChange,
+    handleIgnore,
     refetch,
   };
 };

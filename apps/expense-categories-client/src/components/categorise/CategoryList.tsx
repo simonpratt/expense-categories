@@ -28,11 +28,16 @@ const CategoryList: React.FC<CategoryListProps> = ({
           onClick={() => setSelectedCategory('all')}
         />
         <CategoryListItem
+          category={{ id: 'ignored', name: 'Ignored', colour: null }}
+          selectedCategory={selectedCategory}
+          onClick={() => setSelectedCategory('ignored')}
+        />
+        <CategoryListItem
           category={{ id: null, name: 'Uncategorised', colour: 'grey' }}
           selectedCategory={selectedCategory}
           onClick={() => setSelectedCategory(null)}
           totalDebit={transactionSummaries
-            .filter((tx) => tx.spendingCategoryId === null)
+            .filter((tx) => tx.spendingCategoryId === null && !tx.ignored)
             .reduce((sum, tx) => sum + tx.totalDebit, 0)}
         />
         {categories

@@ -86,7 +86,15 @@ export const getAllTransactions = async () => {
 export const assignSpendingCategory = async (transactionCategoryId: string, spendingCategoryId?: string) => {
   const transactionCategory = await prisma.transactionCategory.update({
     where: { id: transactionCategoryId },
-    data: { spendingCategoryId: spendingCategoryId || null },
+    data: { ignored: false, spendingCategoryId: spendingCategoryId || null },
+  });
+  return transactionCategory;
+};
+
+export const ignoreTransactionSummary = async (transactionCategoryId: string) => {
+  const transactionCategory = await prisma.transactionCategory.update({
+    where: { id: transactionCategoryId },
+    data: { ignored: true, spendingCategoryId: null },
   });
   return transactionCategory;
 };
