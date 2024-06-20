@@ -24,6 +24,13 @@ export const updateCategory = async (category: { id: string; name: string; colou
 };
 
 export const deleteCategory = async (id: string) => {
+  // First, clear the categoryId from any transactionCategories
+  await prisma.transactionCategory.updateMany({
+    where: { categoryId: id },
+    data: { categoryId: null },
+  });
+
+  // Then delete the category
   return prisma.spendingCategory.delete({
     where: { id },
   });
