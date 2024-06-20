@@ -60,17 +60,17 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                       );
                     }}
                   >
-                    <MenuItem value=''>
-                      <ListItemIcon>
-                        <ColorSquare color='grey' />
-                      </ListItemIcon>
-                      <ListItemText primary='Uncategorised' />
-                    </MenuItem>
                     <MenuItem value='ignore'>
                       <ListItemIcon>
                         <Visibility />
                       </ListItemIcon>
                       <ListItemText primary='Ignore' />
+                    </MenuItem>
+                    <MenuItem value=''>
+                      <ListItemIcon>
+                        <ColorSquare color='grey' />
+                      </ListItemIcon>
+                      <ListItemText primary='Uncategorised' />
                     </MenuItem>
                     {categories.map((category) => (
                       <MenuItem key={category.id} value={category.id}>
