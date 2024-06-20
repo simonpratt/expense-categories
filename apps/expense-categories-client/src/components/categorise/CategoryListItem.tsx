@@ -42,6 +42,8 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedC
             ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDebit)
             : undefined
         }
+        primaryTypographyProps={{ style: { display: 'flex', justifyContent: 'space-between' } }}
+        secondaryTypographyProps={{ style: { textAlign: 'right', width: '100%' } }}
       />
     </ListItem>
   );
