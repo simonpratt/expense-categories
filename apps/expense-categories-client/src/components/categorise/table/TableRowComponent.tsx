@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableRow, TableCell, Select, MenuItem, Box, ListItemIcon, ListItemText } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
 import { colorMapping } from '../../../core/colorMapping';
 import styled from 'styled-components';
 import { SpendingCategory, TransactionSummary } from '../../../core/api.types';
@@ -26,7 +27,7 @@ interface TableRowComponentProps {
 }
 
 const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
-  console.log(context);
+  const theme = useTheme();
   const { categories, handleCategoryChange } = context;
   const index = props['data-index'];
   const row = context.transactionSummaries[index];
@@ -62,7 +63,7 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                   >
                     <MenuItem value='ignore'>
                       <ListItemIcon>
-                        <Visibility />
+                        <Visibility style={{ color: theme.palette.text.primary }} />
                       </ListItemIcon>
                       <ListItemText primary='Ignore' />
                     </MenuItem>
