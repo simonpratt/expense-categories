@@ -28,7 +28,7 @@ const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
 const Categorise = () => {
   const { transactionSummaries, handleCategoryChange, handleIgnore } = useTransactionSummaries();
   const { data: categories, refetch: refetchCategories } = apiConnector.app.categories.getCategories.useQuery();
-  const deleteCategory = apiConnector.app.categories.deleteCategory.useMutation();
+  const { mutateAsync: deleteCategory } = apiConnector.app.categories.deleteCategory.useMutation();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -50,7 +50,7 @@ const Categorise = () => {
   const handleDeleteCategory = async () => {
     if (selectedCategory && selectedCategory !== 'all' && selectedCategory !== 'ignored') {
       try {
-        await deleteCategory.mutateAsync({ id: selectedCategory });
+        await deleteCategory({ id: selectedCategory });
         await refetchCategories();
         setSelectedCategory(null);
       } catch (error) {

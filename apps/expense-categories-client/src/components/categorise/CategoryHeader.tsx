@@ -49,10 +49,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
       <CustomHeading>{selectedCategoryName}</CustomHeading>
       {selectedCategory && selectedCategory !== 'all' && (
         <>
-          <IconButton
-            onClick={handleMenuOpen}
-            style={{ color: theme.colours.defaultFont }}
-          >
+          <IconButton onClick={handleMenuOpen} style={{ color: theme.colours.defaultFont }}>
             <MoreVertIcon />
           </IconButton>
           <Menu
