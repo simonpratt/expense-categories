@@ -1,5 +1,6 @@
 import React from 'react';
 import { TableRow, TableCell, Select, MenuItem, Box, ListItemIcon, ListItemText } from '@mui/material';
+import { Visibility } from '@mui/icons-material';
 import { colorMapping } from '../../../core/colorMapping';
 import styled from 'styled-components';
 import { SpendingCategory, TransactionSummary } from '../../../core/api.types';
@@ -64,6 +65,12 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                         <ColorSquare color='grey' />
                       </ListItemIcon>
                       <ListItemText primary='Uncategorised' />
+                    </MenuItem>
+                    <MenuItem value='ignore'>
+                      <ListItemIcon>
+                        <Visibility />
+                      </ListItemIcon>
+                      <ListItemText primary='Ignore' />
                     </MenuItem>
                     {categories.map((category) => (
                       <MenuItem key={category.id} value={category.id}>
