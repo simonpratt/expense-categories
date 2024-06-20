@@ -14,6 +14,7 @@ const theme = createTheme({
   palette: {
     text: {
       primary: Themes.dark.colours.defaultFont,
+      secondary: Themes.dark.colours.secondaryFont,
     },
     background: {
       paper: Themes.dark.colours.cardBackground,

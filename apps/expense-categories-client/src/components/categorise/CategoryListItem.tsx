@@ -13,10 +13,11 @@ const ColorSquare = styled('div')(({ color }) => ({
 interface CategoryListItemProps {
   category: { id: string | null; name: string; colour: string | null };
   selectedCategory: string | null;
+  totalDebit?: number;
   onClick: () => void;
 }
 
-const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedCategory, onClick }) => {
+const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedCategory, totalDebit, onClick }) => {
   const darkTheme = useStyledTheme() as any;
   const theme = useTheme();
 
@@ -34,7 +35,14 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedC
       }}
     >
       <ListItemIcon>{!!category.colour && <ColorSquare color={colorMapping[category.colour]} />}</ListItemIcon>
-      <ListItemText primary={category ? category.name : 'Uncategorised'} />
+      <ListItemText
+        primary={category ? category.name : 'Uncategorised'}
+        secondary={
+          totalDebit
+            ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDebit)
+            : undefined
+        }
+      />
     </ListItem>
   );
 };

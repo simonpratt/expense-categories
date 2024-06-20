@@ -2,13 +2,14 @@ import React from 'react';
 import { ControlLine, Button } from '@dtdot/lego';
 import CategoryListItem from './CategoryListItem';
 import { Box, List } from '@mui/material';
-import { SpendingCategory } from '../../core/api.types';
+import { SpendingCategory, TransactionSummary } from '../../core/api.types';
 
 interface CategoryListProps {
   categories: SpendingCategory[];
   selectedCategory: string | null;
   setSelectedCategory: (category: string | null) => void;
   setAddModalOpen: (open: boolean) => void;
+  transactionSummaries: TransactionSummary[];
 }
 
 const CategoryList: React.FC<CategoryListProps> = ({
@@ -16,6 +17,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
   selectedCategory,
   setSelectedCategory,
   setAddModalOpen,
+  transactionSummaries,
 }) => {
   return (
     <Box width='400px' p={2}>
@@ -24,17 +26,14 @@ const CategoryList: React.FC<CategoryListProps> = ({
           category={{ id: 'all', name: 'All', colour: null }}
           selectedCategory={selectedCategory}
           onClick={() => setSelectedCategory('all')}
-          totalDebit={categories.reduce((sum, category) => sum + category.debitAmount, 0)}
-          totalDebit={categories.reduce((sum, category) => sum + category.debitAmount, 0)}
-          totalDebit={categories.reduce((sum, category) => sum + category.debitAmount, 0)}
         />
         <CategoryListItem
           category={{ id: null, name: 'Uncategorised', colour: 'grey' }}
           selectedCategory={selectedCategory}
           onClick={() => setSelectedCategory(null)}
-          totalDebit={categories.filter(category => category.id === null).reduce((sum, category) => sum + category.debitAmount, 0)}
-          totalDebit={categories.filter(category => category.id === null).reduce((sum, category) => sum + category.debitAmount, 0)}
-          totalDebit={categories.filter(category => category.id === null).reduce((sum, category) => sum + category.debitAmount, 0)}
+          totalDebit={transactionSummaries
+            .filter((tx) => tx.spendingCategoryId === null)
+            .reduce((sum, tx) => sum + tx.totalDebit, 0)}
         />
         {categories
           ?.sort((a, b) => a.name.localeCompare(b.name))
@@ -44,9 +43,9 @@ const CategoryList: React.FC<CategoryListProps> = ({
               category={category}
               selectedCategory={selectedCategory}
               onClick={() => setSelectedCategory(category.id)}
-              totalDebit={category.debitAmount}
-              totalDebit={category.debitAmount}
-              totalDebit={category.debitAmount}
+              totalDebit={transactionSummaries
+                .filter((tx) => tx.spendingCategoryId === category.id)
+                .reduce((sum, tx) => sum + tx.totalDebit, 0)}
             />
           ))}
       </List>
