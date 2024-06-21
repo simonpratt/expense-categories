@@ -1,14 +1,30 @@
-import React from 'react';
-import { Modal } from '@dtdot/lego';
+import React, { useState, useEffect } from 'react';
+import { Button, CenteredLayout, ControlGroup, Loader, Modal, Spacer } from '@dtdot/lego';
 import { apiConnector } from '../../core/api.connector';
 import { SpendingCategory } from '../../core/api.types';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Chip } from '@mui/material';
 
 interface AICategorisationModalProps {
   category: SpendingCategory;
-  handleClose: () => void;
+  onClose: () => void;
+  onInvalidateData: () => void;
 }
 
-const AICategorisationModal: React.FC<AICategorisationModalProps> = ({ category, handleClose }) => {
+const getDefaultSelectedVal = (confidence: string) => {
+  console.log('checking', confidence);
+  switch (confidence.toLowerCase()) {
+    case 'high':
+    case 'medium':
+      return true;
+    default:
+      return false;
+  }
+};
+
+const AICategorisationModal: React.FC<AICategorisationModalProps> = ({ category, onClose, onInvalidateData }) => {
+  const [selections, setSelections] = useState<Record<string, boolean>>({});
+  const { mutateAsync: assignSpendingCategories, isPending: savingCategories } =
+    apiConnector.app.transactions.bulkAssignSpendingCategory.useMutation();
   const { data } = apiConnector.app.assist.getRecommendations.useQuery(
     { spendingCategoryId: category.id },
     {
@@ -16,15 +32,93 @@ const AICategorisationModal: React.FC<AICategorisationModalProps> = ({ category,
     },
   );
 
+  useEffect(() => {
+    if (!data) return;
+
+    setSelections((prevSelections) => {
+      return Object.fromEntries(
+        data.map((d) => [
+          d.id,
+          prevSelections[d.id] === undefined ? getDefaultSelectedVal(d.confidence) : prevSelections[d.id],
+        ]),
+      );
+    });
+  }, [data, setSelections]);
+
+  const handleCheckboxChange = (id: string) => {
+    setSelections((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleApplySelection = async () => {
+    const transactionCategoryIds = Object.keys(selections).filter((k) => selections[k]);
+    const spendingCategoryId = category.id;
+    await assignSpendingCategories({ transactionCategoryIds, spendingCategoryId });
+    onInvalidateData();
+    onClose();
+  };
+
+  const getConfidenceChipProps = (confidence: string) => {
+    switch (confidence) {
+      case 'high':
+        return { color: 'success' as const, label: 'High' };
+      case 'medium':
+        return { color: 'warning' as const, label: 'Medium' };
+      case 'low':
+        return { color: 'error' as const, label: 'Low' };
+      default:
+        return { color: 'default' as const, label: confidence };
+    }
+  };
+
   return (
-    <Modal onClose={handleClose} loading={!data}>
-      <Modal.Header header='Add Category' />
+    <Modal onClose={onClose}>
+      <Modal.Header header={`AI Categorisation: ${category.name}`} />
       <Modal.Body>
-        {data?.map((row) => (
-          <div key={row.id}>
-            {row.description} ({row.confidence}) ({row.totalDebit}) ({row.totalFrequency})
-          </div>
-        ))}
+        {data?.length ? (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Apply</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Confidence</TableCell>
+                  <TableCell>Total Debit</TableCell>
+                  <TableCell>Frequency</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>
+                      {selections[row.id] !== undefined && (
+                        <Checkbox checked={selections[row.id]} onChange={() => handleCheckboxChange(row.id)} />
+                      )}
+                    </TableCell>
+                    <TableCell>{row.description}</TableCell>
+                    <TableCell>
+                      <Chip {...getConfidenceChipProps(row.confidence)} size='small' />
+                    </TableCell>
+                    <TableCell>{row.totalDebit}</TableCell>
+                    <TableCell>{row.totalFrequency}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <CenteredLayout>
+            <Spacer size='4x' />
+            <Loader />
+          </CenteredLayout>
+        )}
+        <Spacer size='4x' />
+        <ControlGroup variation='comfortable'>
+          {Object.keys(selections).filter((k) => selections[k]).length > 0 && (
+            <Button loading={savingCategories} onClick={handleApplySelection} data-testid='button-apply'>
+              Apply
+            </Button>
+          )}
+        </ControlGroup>
       </Modal.Body>
     </Modal>
   );

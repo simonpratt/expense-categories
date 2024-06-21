@@ -3,6 +3,7 @@ import { router, authenticatedProcedure } from '../core/trpc.base';
 import {
   addManyTransactions,
   assignSpendingCategory,
+  bulkAssignSpendingCategory,
   getTransactionCategories,
   ignoreTransactionSummary,
 } from '../services/transaction.service';
@@ -38,6 +39,16 @@ const transactionsRouter = router({
     )
     .mutation(async ({ input }) => {
       return assignSpendingCategory(input.transactionCategoryId, input.spendingCategoryId);
+    }),
+  bulkAssignSpendingCategory: authenticatedProcedure
+    .input(
+      z.object({
+        transactionCategoryIds: z.array(z.string()),
+        spendingCategoryId: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return bulkAssignSpendingCategory(input.transactionCategoryIds, input.spendingCategoryId);
     }),
   ignoreTransactionSummary: authenticatedProcedure
     .input(

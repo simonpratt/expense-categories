@@ -12,6 +12,26 @@ export interface RootProviderProps {
 
 const theme = createTheme({
   palette: {
+    primary: {
+      main: Themes.dark.colours.primary.main,
+      contrastText: Themes.dark.colours.primary.contrastText,
+    },
+    success: {
+      main: Themes.dark.colours.statusSuccess.main,
+      contrastText: Themes.dark.colours.statusSuccess.contrast,
+    },
+    info: {
+      main: Themes.dark.colours.statusInfo.main,
+      contrastText: Themes.dark.colours.statusInfo.contrast,
+    },
+    warning: {
+      main: Themes.dark.colours.statusWarn.main,
+      contrastText: Themes.dark.colours.statusWarn.contrast,
+    },
+    error: {
+      main: Themes.dark.colours.statusDanger.main,
+      contrastText: Themes.dark.colours.statusDanger.contrast,
+    },
     text: {
       primary: Themes.dark.colours.defaultFont,
       secondary: Themes.dark.colours.secondaryFont,

@@ -91,6 +91,14 @@ export const assignSpendingCategory = async (transactionCategoryId: string, spen
   return transactionCategory;
 };
 
+export const bulkAssignSpendingCategory = async (transactionCategoryIds: string[], spendingCategoryId?: string) => {
+  const transactionCategories = await prisma.transactionCategory.updateMany({
+    where: { id: { in: transactionCategoryIds } },
+    data: { ignored: false, spendingCategoryId: spendingCategoryId || null },
+  });
+  return transactionCategories;
+};
+
 export const ignoreTransactionSummary = async (transactionCategoryId: string) => {
   const transactionCategory = await prisma.transactionCategory.update({
     where: { id: transactionCategoryId },

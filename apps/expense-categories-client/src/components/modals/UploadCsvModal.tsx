@@ -6,7 +6,7 @@ import { apiConnector } from '../../core/api.connector';
 import { parseDescription } from '../../helpers/parseDescription';
 
 interface UploadCsvModalProps {
-  handleClose: () => void;
+  onClose: () => void;
 }
 
 const hashValue = (val: string) =>
@@ -17,7 +17,7 @@ const hashValue = (val: string) =>
     return hexes.join('');
   });
 
-const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ handleClose }) => {
+const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ onClose }) => {
   const { mutateAsync, isLoading } = apiConnector.app.transactions.addMany.useMutation();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,14 +41,14 @@ const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ handleClose }) => {
           }
 
           await mutateAsync({ transactions: data });
-          handleClose();
+          onClose();
         },
       });
     }
   };
 
   return (
-    <Modal onClose={handleClose} loading={isLoading}>
+    <Modal onClose={onClose} loading={isLoading}>
       <Modal.Body>
         <input type='file' accept='.csv' onChange={handleFileUpload} />
       </Modal.Body>

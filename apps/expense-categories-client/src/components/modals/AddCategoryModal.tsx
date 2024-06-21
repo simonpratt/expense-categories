@@ -4,10 +4,10 @@ import { apiConnector } from '../../core/api.connector';
 import ColorPicker from './ColorPicker';
 
 interface AddCategoryModalProps {
-  handleClose: () => void;
+  onClose: () => void;
 }
 
-const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ handleClose }) => {
+const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose }) => {
   const { mutateAsync, isLoading } = apiConnector.app.categories.addCategory.useMutation();
   const [formValue, setFormValue] = useState({ name: '', colour: 'red' });
   const utils = apiConnector.useUtils();
@@ -15,11 +15,11 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ handleClose }) => {
   const handleAddCategory = async () => {
     await mutateAsync(formValue);
     utils.invalidate('app.categories.getCategories' as any);
-    handleClose();
+    onClose();
   };
 
   return (
-    <Modal onClose={handleClose} loading={isLoading}>
+    <Modal onClose={onClose} loading={isLoading}>
       <Modal.Header header='Add Category' />
       <Modal.Body>
         <Form value={formValue} onChange={setFormValue}>

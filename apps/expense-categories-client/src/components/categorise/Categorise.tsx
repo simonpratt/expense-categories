@@ -28,7 +28,12 @@ const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
 };
 
 const Categorise = () => {
-  const { transactionSummaries, handleCategoryChange, handleIgnore } = useTransactionSummaries();
+  const {
+    transactionSummaries,
+    handleCategoryChange,
+    handleIgnore,
+    refetch: refetchTransactionSummaries,
+  } = useTransactionSummaries();
   const { data: categories, refetch: refetchCategories } = apiConnector.app.categories.getCategories.useQuery();
   const { mutateAsync: deleteCategory } = apiConnector.app.categories.deleteCategory.useMutation();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
@@ -109,12 +114,16 @@ const Categorise = () => {
           />
         </div>
       </Box>
-      {isAddModalOpen && <AddCategoryModal handleClose={() => setAddModalOpen(false)} />}
+      {isAddModalOpen && <AddCategoryModal onClose={() => setAddModalOpen(false)} />}
       {isEditModalOpen && selectedCategoryObj && (
-        <EditCategoryModal category={selectedCategoryObj} handleClose={() => setEditModalOpen(false)} />
+        <EditCategoryModal category={selectedCategoryObj} onClose={() => setEditModalOpen(false)} />
       )}
       {isAIModalOpen && selectedDBCategory && (
-        <AICategorisationModal category={selectedDBCategory} handleClose={() => setAIModalOpen(false)} />
+        <AICategorisationModal
+          category={selectedDBCategory}
+          onClose={() => setAIModalOpen(false)}
+          onInvalidateData={() => refetchTransactionSummaries()}
+        />
       )}
     </Box>
   );
