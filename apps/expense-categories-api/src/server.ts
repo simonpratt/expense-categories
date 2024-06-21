@@ -12,12 +12,14 @@ import { configureExpressHealthCheck } from './core/healthcheck';
 import { router } from './core/trpc.base';
 import transactionsRouter from './routers/transactions.router';
 import categoriesRouter from './routers/category.router';
+import assistRouter from './routers/assist.router';
 
 const logger = createLogger().child({ name: 'server' });
 
 const appRouter = router({
-  transactions: transactionsRouter,
+  assist: assistRouter,
   categories: categoriesRouter,
+  transactions: transactionsRouter,
 });
 
 const rootRouter = router({

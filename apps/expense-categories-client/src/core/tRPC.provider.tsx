@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpBatchLink } from '@trpc/client';
+import { unstable_httpBatchStreamLink } from '@trpc/client';
 
 import { apiConnector } from './api.connector';
 import environment from './environment';
@@ -15,7 +15,7 @@ export function TRPCProvider({ children }: TRPCProviderProps) {
   const [trpcClient] = useState(() =>
     apiConnector.createClient({
       links: [
-        httpBatchLink({
+        unstable_httpBatchStreamLink({
           url: environment.VITE_API_URL,
         }),
       ],

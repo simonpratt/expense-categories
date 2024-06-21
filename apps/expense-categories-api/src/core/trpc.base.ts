@@ -2,7 +2,7 @@ import { initTRPC } from '@trpc/server';
 
 import { UserContext } from './context';
 
-export const t = initTRPC.context<UserContext>().create();
+export const t = initTRPC.context<UserContext>().create({ experimental: { iterablesAndDeferreds: true } });
 
 export const router = t.router;
 
