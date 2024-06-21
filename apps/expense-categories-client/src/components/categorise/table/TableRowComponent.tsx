@@ -2,7 +2,6 @@ import React from 'react';
 import { TableRow, TableCell, Select, MenuItem, Box, ListItemIcon, ListItemText } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import { colorMapping } from '../../../core/colorMapping';
 import styled from 'styled-components';
 import { SpendingCategory, TransactionSummary } from '../../../core/api.types';
 import { tableColumns } from './tableColumns';
@@ -51,7 +50,7 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                       const selectedCategory = categories.find((category) => category.id === selected);
                       return (
                         <Box display='flex' alignItems='center'>
-                          <ColorSquare color={selectedCategory ? colorMapping[selectedCategory.colour] : 'grey'} />
+                          <ColorSquare colorKey={selectedCategory ? selectedCategory.colour : null} />
                           <SelectNameDisplay>
                             {selectedCategory ? selectedCategory.name : 'Uncategorised'}
                           </SelectNameDisplay>
@@ -67,14 +66,14 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                     </MenuItem>
                     <MenuItem value=''>
                       <ListItemIcon>
-                        <ColorSquare color='grey' />
+                        <ColorSquare colorKey={null} />
                       </ListItemIcon>
                       <ListItemText primary='Uncategorised' />
                     </MenuItem>
                     {categories.map((category) => (
                       <MenuItem key={category.id} value={category.id}>
                         <ListItemIcon>
-                          <ColorSquare color={colorMapping[category.colour]} />
+                          <ColorSquare colorKey={category.colour} />
                         </ListItemIcon>
                         <ListItemText primary={category.name} />
                       </MenuItem>

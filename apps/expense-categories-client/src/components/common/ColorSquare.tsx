@@ -1,5 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
+import { colorMapping } from '../../core/colorMapping';
 
 const ColorSquareStyled = styled('div')(({ color }) => ({
   width: 20,
@@ -8,10 +9,11 @@ const ColorSquareStyled = styled('div')(({ color }) => ({
 }));
 
 interface ColorSquareProps {
-  color: string;
+  colorKey: string | null;
 }
 
-const ColorSquare: React.FC<ColorSquareProps> = ({ color }) => {
+const ColorSquare: React.FC<ColorSquareProps> = ({ colorKey }) => {
+  const color = colorKey ? colorMapping[colorKey] : 'grey';
   return <ColorSquareStyled color={color} />;
 };
 
