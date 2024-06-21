@@ -4,7 +4,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { TRPCError } from '@trpc/server';
 import environment from '../core/environment';
 import { z } from 'zod';
-import { parseJsonBuffer } from '../helpers/parseJsonBuffer';
+import { jsonHelpers } from '../helpers/jsonHelpers';
 
 const client = new Anthropic({
   apiKey: environment.ANTHROPIC_API_KEY,
@@ -31,26 +31,7 @@ const assistRouter = router({
         max_tokens: 1024,
       });
 
-      let jsonBuffer = '';
-
-      for await (const chunk of stream) {
-        if (chunk.type === 'content_block_delta') {
-          jsonBuffer += chunk.delta.text;
-
-          const { remainingBuffer, objects: carModels } = parseJsonBuffer(jsonBuffer, CarModelSchema);
-          jsonBuffer = remainingBuffer;
-
-          for (const carModel of carModels) {
-            yield carModel;
-          }
-        }
-      }
-
-      // Process any remaining data in the buffer
-      const { objects: carModels } = parseJsonBuffer(jsonBuffer, CarModelSchema);
-      for (const carModel of carModels) {
-        yield carModel;
-      }
+      yield* jsonHelpers.extractAndYieldObjects(stream, CarModelSchema);
     } catch (error) {
       console.error('Error in streamStory:', error);
       throw new TRPCError({

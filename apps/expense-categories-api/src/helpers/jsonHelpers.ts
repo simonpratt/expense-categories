@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export function parseJsonBuffer<T>(buffer: string, schema: z.ZodType<T>): { remainingBuffer: string; objects: T[] } {
+function parseJsonBuffer<T>(buffer: string, schema: z.ZodType<T>): { remainingBuffer: string; objects: T[] } {
   const objects: T[] = [];
   let remainingBuffer = buffer;
 
@@ -46,3 +46,31 @@ export function parseJsonBuffer<T>(buffer: string, schema: z.ZodType<T>): { rema
 
   return { remainingBuffer, objects };
 }
+
+export async function* extractAndYieldObjects(stream: any, schema: z.ZodType<any>) {
+  let jsonBuffer = '';
+
+  for await (const chunk of stream) {
+    if (chunk.type === 'content_block_delta') {
+      jsonBuffer += chunk.delta.text;
+
+      const { remainingBuffer, objects } = parseJsonBuffer(jsonBuffer, schema);
+      jsonBuffer = remainingBuffer;
+
+      for (const object of objects) {
+        yield object;
+      }
+    }
+  }
+
+  // Process any remaining data in the buffer
+  const { objects } = parseJsonBuffer(jsonBuffer, schema);
+  for (const object of objects) {
+    yield object;
+  }
+}
+
+export const jsonHelpers = {
+  parseJsonBuffer,
+  extractAndYieldObjects,
+};
