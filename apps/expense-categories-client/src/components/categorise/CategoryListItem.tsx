@@ -1,14 +1,8 @@
 import React from 'react';
 import { ListItem, ListItemText, ListItemIcon, useTheme } from '@mui/material';
-import { styled } from '@mui/system';
 import { useTheme as useStyledTheme } from 'styled-components';
 import { colorMapping } from '../../core/colorMapping';
-
-const ColorSquare = styled('div')(({ color }) => ({
-  width: 20,
-  height: 20,
-  backgroundColor: color,
-}));
+import ColorSquare from '../common/ColorSquare';
 
 interface CategoryListItemProps {
   category: { id: string | null; name: string; colour: string | null };

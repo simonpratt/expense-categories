@@ -6,12 +6,7 @@ import { colorMapping } from '../../../core/colorMapping';
 import styled from 'styled-components';
 import { SpendingCategory, TransactionSummary } from '../../../core/api.types';
 import { tableColumns } from './tableColumns';
-
-const ColorSquare = styled('div')(({ color }) => ({
-  width: 20,
-  height: 20,
-  backgroundColor: color,
-}));
+import ColorSquare from '../../common/ColorSquare';
 
 const SelectNameDisplay = styled.span`
   padding-left: 16px;
