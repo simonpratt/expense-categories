@@ -2,7 +2,7 @@ const rules = [
   {
     match: / - Internal Transfer - Receipt.*/,
     func: (val: string) =>
-      `Transfer to ${val.replace(/.* - Receipt \d+ /, '')} - ${val.replace(/ - Internal Transfer - Receipt.*/, '')}`
+      `Transfer <> ${val.replace(/.* - Receipt \d+ /, '')} - ${val.replace(/ - Internal Transfer - Receipt.*/, '')}`
         .trim()
         .toLowerCase(),
   },

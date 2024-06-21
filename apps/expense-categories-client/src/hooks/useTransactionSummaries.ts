@@ -10,7 +10,7 @@ export const useTransactionSummaries = () => {
 
   useEffect(() => {
     _transactionSummaries && setTransactionSummaries(_transactionSummaries);
-  }, _transactionSummaries);
+  }, [_transactionSummaries]);
 
   const updateTransactionSummary = (updatedTransaction: TransactionSummary) => {
     setTransactionSummaries((prevTransactions) =>

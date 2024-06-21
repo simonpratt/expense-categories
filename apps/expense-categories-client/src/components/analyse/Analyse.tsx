@@ -8,14 +8,12 @@ const Analyse = () => {
     refetchOnWindowFocus: false,
   });
 
-  console.log(query.data);
-
   return (
     <div>
       <h1>Space Adventure Story</h1>
       {query.data?.map((car) => (
         <div key={car.model} style={{ maxWidth: '500px', color: 'white' }}>
-          {car.model}
+          {car.description} ({car.confidence})
         </div>
       ))}
     </div>
