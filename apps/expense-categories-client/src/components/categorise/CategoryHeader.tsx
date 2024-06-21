@@ -45,7 +45,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
   };
 
   return (
-    <Box display='flex' alignItems='center' justifyContent='space-between' p={2}>
+    <Box display='flex' alignItems='center' p={2}>
       <CustomHeading>{selectedCategoryName}</CustomHeading>
       {selectedCategory && selectedCategory !== 'all' && (
         <>

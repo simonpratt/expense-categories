@@ -47,7 +47,7 @@ function parseJsonBuffer<T>(buffer: string, schema: z.ZodType<T>): { remainingBu
   return { remainingBuffer, objects };
 }
 
-export async function* extractAndYieldObjects(stream: any, schema: z.ZodType<any>) {
+export async function* extractAndYieldObjects<T>(stream: any, schema: z.ZodType<T>): AsyncGenerator<T> {
   let jsonBuffer = '';
 
   for await (const chunk of stream) {

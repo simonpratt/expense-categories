@@ -12,6 +12,8 @@ import { useTransactionSummaries } from '../../hooks/useTransactionSummaries';
 import TableRowComponent from './table/TableRowComponent';
 import TableHeaderCell from './table/TableHeaderCell';
 import { TransactionSummary } from '../../core/api.types';
+import AICategorisationBanner from './AICategorisationBanner';
+import AICategorisationModal from './AICategorisationModal';
 
 const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
   Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
@@ -32,6 +34,7 @@ const Categorise = () => {
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isAIModalOpen, setAIModalOpen] = useState(false);
 
   const selectedCategoryObj = categories?.find((category) => category.id === selectedCategory);
 
@@ -74,6 +77,8 @@ const Categorise = () => {
     return !tx.ignored && tx.spendingCategoryId === selectedCategory;
   });
 
+  const selectedDBCategory = categories.find((c) => c.id === selectedCategory);
+
   return (
     <Box display='flex'>
       <CategoryList
@@ -90,6 +95,9 @@ const Categorise = () => {
           setEditModalOpen={setEditModalOpen}
           onDeleteCategory={handleDeleteCategory}
         />
+        {selectedCategory && selectedCategory !== 'all' && selectedCategory !== 'ignored' && (
+          <AICategorisationBanner onStartCategorisation={() => setAIModalOpen(true)} />
+        )}
         <Spacer size='1x' />
         <div style={{ width: '100%', height: 'calc(100vh - 140px)' }}>
           <TableVirtuoso
@@ -104,6 +112,9 @@ const Categorise = () => {
       {isAddModalOpen && <AddCategoryModal handleClose={() => setAddModalOpen(false)} />}
       {isEditModalOpen && selectedCategoryObj && (
         <EditCategoryModal category={selectedCategoryObj} handleClose={() => setEditModalOpen(false)} />
+      )}
+      {isAIModalOpen && selectedDBCategory && (
+        <AICategorisationModal category={selectedDBCategory} handleClose={() => setAIModalOpen(false)} />
       )}
     </Box>
   );
