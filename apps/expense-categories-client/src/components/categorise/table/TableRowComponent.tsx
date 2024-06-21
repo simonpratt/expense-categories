@@ -50,7 +50,7 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                       const selectedCategory = categories.find((category) => category.id === selected);
                       return (
                         <Box display='flex' alignItems='center'>
-                          <ColorSquare colorKey={selectedCategory ? selectedCategory.colour : null} />
+                          <ColorSquare colorKey={selectedCategory?.colour} />
                           <SelectNameDisplay>
                             {selectedCategory ? selectedCategory.name : 'Uncategorised'}
                           </SelectNameDisplay>
@@ -66,7 +66,7 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                     </MenuItem>
                     <MenuItem value=''>
                       <ListItemIcon>
-                        <ColorSquare colorKey={null} />
+                        <ColorSquare colorKey={'grey'} />
                       </ListItemIcon>
                       <ListItemText primary='Uncategorised' />
                     </MenuItem>

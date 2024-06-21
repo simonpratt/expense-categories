@@ -9,11 +9,11 @@ const ColorSquareStyled = styled('div')(({ color }) => ({
 }));
 
 interface ColorSquareProps {
-  colorKey: string | null;
+  colorKey?: string;
 }
 
 const ColorSquare: React.FC<ColorSquareProps> = ({ colorKey }) => {
-  const color = colorKey ? colorMapping[colorKey] : 'grey';
+  const color = colorKey ? colorMapping[colorKey] : 'transparent';
   return <ColorSquareStyled color={color} />;
 };
 

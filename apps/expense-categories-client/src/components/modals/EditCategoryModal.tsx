@@ -5,8 +5,9 @@ import ColorPicker from './ColorPicker';
 import { SpendingCategory } from '../../core/api.types';
 
 interface EditCategoryModalProps {
-  onClose: () => void;
   category: SpendingCategory;
+  onClose: () => void;
+  onInvalidateData: () => void;
 }
 
 interface FormProps {
@@ -14,19 +15,18 @@ interface FormProps {
   colour: string;
 }
 
-const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ category, onClose }) => {
-  const { mutateAsync, isLoading } = apiConnector.app.categories.updateCategory.useMutation();
+const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ category, onClose, onInvalidateData }) => {
+  const { mutateAsync, isPending } = apiConnector.app.categories.updateCategory.useMutation();
   const [formValue, setFormValue] = useState<FormProps>(category);
-  const utils = apiConnector.useUtils();
 
   const handleAddCategory = async () => {
     await mutateAsync({ id: category.id, ...formValue });
-    utils.invalidate('app.categories.getCategories' as any);
+    onInvalidateData();
     onClose();
   };
 
   return (
-    <Modal onClose={onClose} loading={isLoading}>
+    <Modal onClose={onClose} loading={isPending}>
       <Modal.Header header='Edit Category' />
       <Modal.Body>
         <Form value={formValue} onChange={setFormValue}>
@@ -40,7 +40,7 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ category, onClose
                 onSelectColor={(colour) => setFormValue({ ...formValue, colour })}
               />
             </div>
-            <Button loading={isLoading} onClick={handleAddCategory} data-testid='button-save'>
+            <Button loading={isPending} onClick={handleAddCategory} data-testid='button-save'>
               Save Category
             </Button>
           </ControlGroup>

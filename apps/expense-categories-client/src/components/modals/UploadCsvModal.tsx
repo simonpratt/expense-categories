@@ -18,7 +18,7 @@ const hashValue = (val: string) =>
   });
 
 const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ onClose }) => {
-  const { mutateAsync, isLoading } = apiConnector.app.transactions.addMany.useMutation();
+  const { mutateAsync, isPending } = apiConnector.app.transactions.addMany.useMutation();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -48,7 +48,7 @@ const UploadCsvModal: React.FC<UploadCsvModalProps> = ({ onClose }) => {
   };
 
   return (
-    <Modal onClose={onClose} loading={isLoading}>
+    <Modal onClose={onClose} loading={isPending}>
       <Modal.Body>
         <input type='file' accept='.csv' onChange={handleFileUpload} />
       </Modal.Body>

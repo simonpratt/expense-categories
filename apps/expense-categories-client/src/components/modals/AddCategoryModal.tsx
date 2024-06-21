@@ -5,21 +5,21 @@ import ColorPicker from './ColorPicker';
 
 interface AddCategoryModalProps {
   onClose: () => void;
+  onInvalidateData: () => void;
 }
 
-const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose }) => {
-  const { mutateAsync, isLoading } = apiConnector.app.categories.addCategory.useMutation();
+const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose, onInvalidateData }) => {
+  const { mutateAsync, isPending } = apiConnector.app.categories.addCategory.useMutation();
   const [formValue, setFormValue] = useState({ name: '', colour: 'red' });
-  const utils = apiConnector.useUtils();
 
   const handleAddCategory = async () => {
     await mutateAsync(formValue);
-    utils.invalidate('app.categories.getCategories' as any);
+    onInvalidateData();
     onClose();
   };
 
   return (
-    <Modal onClose={onClose} loading={isLoading}>
+    <Modal onClose={onClose} loading={isPending}>
       <Modal.Header header='Add Category' />
       <Modal.Body>
         <Form value={formValue} onChange={setFormValue}>
@@ -33,7 +33,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose }) => {
                 onSelectColor={(colour) => setFormValue({ ...formValue, colour })}
               />
             </div>
-            <Button loading={isLoading} onClick={handleAddCategory} data-testid='button-add'>
+            <Button loading={isPending} onClick={handleAddCategory} data-testid='button-add'>
               Add Category
             </Button>
           </ControlGroup>

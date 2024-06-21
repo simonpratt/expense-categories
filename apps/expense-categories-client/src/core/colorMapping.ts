@@ -1,5 +1,5 @@
 export const colorMapping: Record<string, string> = {
-  grey: '#494b50',
+  grey: 'grey',
   red: '#FE6D73',
   green: '#8ACB88',
   blue: '#90BEDE',

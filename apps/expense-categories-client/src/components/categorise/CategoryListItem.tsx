@@ -2,15 +2,16 @@ import React from 'react';
 import { ListItem, ListItemText, ListItemIcon, useTheme } from '@mui/material';
 import { useTheme as useStyledTheme } from 'styled-components';
 import ColorSquare from '../common/ColorSquare';
+import { FilterCategory } from './filterCategories';
 
 interface CategoryListItemProps {
-  category: { id: string | null; name: string; colour: string | null };
-  selectedCategory: string | null;
+  category: FilterCategory;
+  isSelected: boolean;
   totalDebit?: number;
   onClick: () => void;
 }
 
-const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedCategory, totalDebit, onClick }) => {
+const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, isSelected, totalDebit, onClick }) => {
   const darkTheme = useStyledTheme() as any;
   const theme = useTheme();
 
@@ -18,8 +19,7 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, selectedC
     <ListItem
       onClick={onClick}
       sx={{
-        'backgroundColor':
-          selectedCategory === (category ? category.id : null) ? theme.palette.action.selected : 'inherit',
+        'backgroundColor': isSelected ? theme.palette.action.selected : 'inherit',
         '&:hover': {
           backgroundColor: theme.palette.action.hover,
         },

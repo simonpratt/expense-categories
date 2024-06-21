@@ -14,6 +14,7 @@ import TableHeaderCell from './table/TableHeaderCell';
 import { TransactionSummary } from '../../core/api.types';
 import AICategorisationBanner from './AICategorisationBanner';
 import AICategorisationModal from './AICategorisationModal';
+import { FilterCategory, systemCategories, systemCategoryUncategorised } from './filterCategories';
 
 const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
   Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
@@ -34,33 +35,30 @@ const Categorise = () => {
     handleIgnore,
     refetch: refetchTransactionSummaries,
   } = useTransactionSummaries();
-  const { data: categories, refetch: refetchCategories } = apiConnector.app.categories.getCategories.useQuery();
+  const { data: dbCategories, refetch: refetchCategories } = apiConnector.app.categories.getCategories.useQuery();
   const { mutateAsync: deleteCategory } = apiConnector.app.categories.deleteCategory.useMutation();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>(systemCategoryUncategorised);
   const [isAIModalOpen, setAIModalOpen] = useState(false);
 
-  const selectedCategoryObj = categories?.find((category) => category.id === selectedCategory);
-
-  let selectedCategoryName: string;
-  switch (selectedCategory) {
-    case 'all':
-      selectedCategoryName = 'All';
-      break;
-    case null:
-      selectedCategoryName = 'Uncategorised';
-      break;
-    default:
-      selectedCategoryName = selectedCategoryObj?.name || 'Unknown';
-  }
+  const categories: FilterCategory[] = [
+    ...systemCategories,
+    ...(dbCategories || [])
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((category) => ({
+        ...category,
+        fromDatabase: true,
+        filterFn: (tx: TransactionSummary) => tx.spendingCategoryId === category.id,
+      })),
+  ];
 
   const handleDeleteCategory = async () => {
-    if (selectedCategory && selectedCategory !== 'all' && selectedCategory !== 'ignored') {
+    if (selectedCategory?.id && selectedCategory.fromDatabase) {
       try {
-        await deleteCategory({ id: selectedCategory });
+        await deleteCategory({ id: selectedCategory.id });
         await refetchCategories();
-        setSelectedCategory(null);
+        setSelectedCategory(systemCategoryUncategorised);
       } catch (error) {
         console.error('Failed to delete category:', error);
         // You might want to show an error message to the user here
@@ -72,17 +70,8 @@ const Categorise = () => {
     return <Loader variant='page-loader' />;
   }
 
-  const renderedData = transactionSummaries.filter((tx) => {
-    if (selectedCategory === 'all') {
-      return !tx.ignored;
-    }
-    if (selectedCategory === 'ignored') {
-      return tx.ignored;
-    }
-    return !tx.ignored && tx.spendingCategoryId === selectedCategory;
-  });
-
-  const selectedDBCategory = categories.find((c) => c.id === selectedCategory);
+  const renderedData = transactionSummaries.filter(selectedCategory.filterFn);
+  const dbCategory = dbCategories?.find((category) => category.id === selectedCategory.id);
 
   return (
     <Box display='flex'>
@@ -95,12 +84,11 @@ const Categorise = () => {
       />
       <Box flex='1' pr={2} pt={1} display='flex' flexDirection='column'>
         <CategoryHeader
-          selectedCategoryName={selectedCategoryName}
           selectedCategory={selectedCategory}
           setEditModalOpen={setEditModalOpen}
           onDeleteCategory={handleDeleteCategory}
         />
-        {selectedCategory && selectedCategory !== 'all' && selectedCategory !== 'ignored' && (
+        {selectedCategory && selectedCategory.fromDatabase && (
           <AICategorisationBanner onStartCategorisation={() => setAIModalOpen(true)} />
         )}
         <Spacer size='1x' />
@@ -110,17 +98,28 @@ const Categorise = () => {
             components={VirtuosoTableComponents}
             fixedHeaderContent={TableHeaderCell}
             style={{ height: '100%' }}
-            context={{ transactionSummaries: renderedData, categories, handleCategoryChange, handleIgnore }}
+            context={{
+              transactionSummaries: renderedData,
+              categories: dbCategories,
+              handleCategoryChange,
+              handleIgnore,
+            }}
           />
         </div>
       </Box>
-      {isAddModalOpen && <AddCategoryModal onClose={() => setAddModalOpen(false)} />}
-      {isEditModalOpen && selectedCategoryObj && (
-        <EditCategoryModal category={selectedCategoryObj} onClose={() => setEditModalOpen(false)} />
+      {isAddModalOpen && (
+        <AddCategoryModal onClose={() => setAddModalOpen(false)} onInvalidateData={refetchCategories} />
       )}
-      {isAIModalOpen && selectedDBCategory && (
+      {isEditModalOpen && dbCategory && (
+        <EditCategoryModal
+          category={dbCategory}
+          onClose={() => setEditModalOpen(false)}
+          onInvalidateData={refetchCategories}
+        />
+      )}
+      {isAIModalOpen && dbCategory && (
         <AICategorisationModal
-          category={selectedDBCategory}
+          category={dbCategory}
           onClose={() => setAIModalOpen(false)}
           onInvalidateData={() => refetchTransactionSummaries()}
         />

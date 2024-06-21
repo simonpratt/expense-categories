@@ -3,6 +3,8 @@ import { Box, IconButton, Menu, MenuItem } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import styled, { useTheme } from 'styled-components';
 import { Heading } from '@dtdot/lego';
+import ColorSquare from '../common/ColorSquare';
+import { FilterCategory } from './filterCategories';
 
 const CustomHeading = styled(Heading.SubHeading)`
   height: 40px;
@@ -11,18 +13,12 @@ const CustomHeading = styled(Heading.SubHeading)`
 `;
 
 interface CategoryHeaderProps {
-  selectedCategoryName: string;
-  selectedCategory: string | null;
+  selectedCategory: FilterCategory;
   setEditModalOpen: (open: boolean) => void;
   onDeleteCategory: () => void;
 }
 
-const CategoryHeader: React.FC<CategoryHeaderProps> = ({
-  selectedCategoryName,
-  selectedCategory,
-  setEditModalOpen,
-  onDeleteCategory,
-}) => {
+const CategoryHeader: React.FC<CategoryHeaderProps> = ({ selectedCategory, setEditModalOpen, onDeleteCategory }) => {
   const theme = useTheme() as any;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -46,8 +42,9 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
 
   return (
     <Box display='flex' alignItems='center' p={2}>
-      <CustomHeading>{selectedCategoryName}</CustomHeading>
-      {selectedCategory && selectedCategory !== 'all' && (
+      <ColorSquare colorKey={selectedCategory.colour} />
+      <CustomHeading>{selectedCategory.name}</CustomHeading>
+      {selectedCategory.id && selectedCategory.id !== 'all' && (
         <>
           <IconButton onClick={handleMenuOpen} style={{ color: theme.colours.defaultFont }}>
             <MoreVertIcon />

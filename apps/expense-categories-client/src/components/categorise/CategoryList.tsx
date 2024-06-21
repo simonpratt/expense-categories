@@ -2,12 +2,13 @@ import React from 'react';
 import { ControlLine, Button } from '@dtdot/lego';
 import CategoryListItem from './CategoryListItem';
 import { Box, List } from '@mui/material';
-import { SpendingCategory, TransactionSummary } from '../../core/api.types';
+import { TransactionSummary } from '../../core/api.types';
+import { FilterCategory } from './filterCategories';
 
 interface CategoryListProps {
-  categories: SpendingCategory[];
-  selectedCategory: string | null;
-  setSelectedCategory: (category: string | null) => void;
+  categories: FilterCategory[];
+  selectedCategory: FilterCategory;
+  setSelectedCategory: (category: FilterCategory) => void;
   setAddModalOpen: (open: boolean) => void;
   transactionSummaries: TransactionSummary[];
 }
@@ -22,37 +23,15 @@ const CategoryList: React.FC<CategoryListProps> = ({
   return (
     <Box width='400px' p={2}>
       <List>
-        <CategoryListItem
-          category={{ id: 'all', name: 'All', colour: null }}
-          selectedCategory={selectedCategory}
-          onClick={() => setSelectedCategory('all')}
-        />
-        <CategoryListItem
-          category={{ id: 'ignored', name: 'Ignored', colour: null }}
-          selectedCategory={selectedCategory}
-          onClick={() => setSelectedCategory('ignored')}
-        />
-        <CategoryListItem
-          category={{ id: null, name: 'Uncategorised', colour: 'grey' }}
-          selectedCategory={selectedCategory}
-          onClick={() => setSelectedCategory(null)}
-          totalDebit={transactionSummaries
-            .filter((tx) => tx.spendingCategoryId === null && !tx.ignored)
-            .reduce((sum, tx) => sum + tx.totalDebit, 0)}
-        />
-        {categories
-          ?.sort((a, b) => a.name.localeCompare(b.name))
-          .map((category) => (
-            <CategoryListItem
-              key={category.id}
-              category={category}
-              selectedCategory={selectedCategory}
-              onClick={() => setSelectedCategory(category.id)}
-              totalDebit={transactionSummaries
-                .filter((tx) => tx.spendingCategoryId === category.id)
-                .reduce((sum, tx) => sum + tx.totalDebit, 0)}
-            />
-          ))}
+        {categories.map((category) => (
+          <CategoryListItem
+            key={category.id}
+            category={category}
+            isSelected={selectedCategory.id === category.id}
+            onClick={() => setSelectedCategory(category)}
+            totalDebit={transactionSummaries.filter(category.filterFn).reduce((sum, tx) => sum + tx.totalDebit, 0)}
+          />
+        ))}
       </List>
       <ControlLine>
         <Button variant='tertiary' onClick={() => setAddModalOpen(true)}>
