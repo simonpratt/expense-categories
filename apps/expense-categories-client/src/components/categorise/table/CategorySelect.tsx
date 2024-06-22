@@ -30,9 +30,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({ categories, value, onCh
         return (
           <Box display='flex' alignItems='center'>
             <ColorSquare colorKey={selectedCategory?.colour} />
-            <SelectNameDisplay>
-              {selectedCategory ? selectedCategory.name : 'Uncategorised'}
-            </SelectNameDisplay>
+            <SelectNameDisplay>{selectedCategory ? selectedCategory.name : 'Uncategorised'}</SelectNameDisplay>
           </Box>
         );
       }}

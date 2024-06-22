@@ -3,6 +3,7 @@ import { Button, CenteredLayout, ControlGroup, Loader, Modal, Spacer } from '@dt
 import { apiConnector } from '../../core/api.connector';
 import { SpendingCategory, TransactionSummary } from '../../core/api.types';
 import { Checkbox, Chip, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import CategorySelect from './table/CategorySelect';
 // import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Chip } from '@mui/material';
 
 interface AIAutoCategoriseModalProps {
@@ -81,6 +82,10 @@ const AIAutoCategoriseModal: React.FC<AIAutoCategoriseModalProps> = ({ onClose, 
     }
   };
 
+  if (!categories) {
+    return null;
+  }
+
   return (
     <Modal onClose={onClose}>
       <Modal.Header header={`Auto-categorise`} />
@@ -111,8 +116,11 @@ const AIAutoCategoriseModal: React.FC<AIAutoCategoriseModalProps> = ({ onClose, 
                       </TableCell>
                       <TableCell>{row.description}</TableCell>
                       <TableCell>
-                        {categories?.find((category) => category.id === row.spendingCategoryId)?.name}
+                        <CategorySelect categories={categories} value={row.spendingCategoryId} onChange={() => {}} />
                       </TableCell>
+                      {/* <TableCell>
+                        {categories?.find((category) => category.id === row.spendingCategoryId)?.name}
+                      </TableCell> */}
                       <TableCell>
                         <Chip {...getConfidenceChipProps(row.confidence)} size='small' />
                       </TableCell>

@@ -60,6 +60,7 @@ const Categorise = () => {
       try {
         await deleteCategory({ id: selectedCategory.id });
         await refetchCategories();
+        await refetchTransactionSummaries();
         setSelectedCategory(systemCategoryUncategorised);
       } catch (error) {
         console.error('Failed to delete category:', error);
