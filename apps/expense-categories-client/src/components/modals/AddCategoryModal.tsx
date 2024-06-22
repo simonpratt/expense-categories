@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, ControlGroup, Form, Input, Modal, Spacer, Text } from '@dtdot/lego';
+import { Button, ControlGroup, Form, Input, Modal, Spacer, Text, TextArea } from '@dtdot/lego';
 import { apiConnector } from '../../core/api.connector';
 import ColorPicker from './ColorPicker';
 
@@ -10,7 +10,7 @@ interface AddCategoryModalProps {
 
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose, onInvalidateData }) => {
   const { mutateAsync, isPending } = apiConnector.app.categories.addCategory.useMutation();
-  const [formValue, setFormValue] = useState({ name: '', colour: 'red' });
+  const [formValue, setFormValue] = useState({ name: '', colour: 'red', description: '' });
 
   const handleAddCategory = async () => {
     await mutateAsync(formValue);
@@ -25,6 +25,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose, onInvalida
         <Form value={formValue} onChange={setFormValue}>
           <ControlGroup variation='comfortable'>
             <Input name='name' label='Name' />
+            <TextArea name='description' label='Description' />
             <div>
               <Text>Colour</Text>
               <Spacer size='1x' />

@@ -11,6 +11,7 @@ const categoriesRouter = router({
       z.object({
         name: z.string(),
         colour: z.string(),
+        description: z.string(),
       }),
     )
     .mutation(({ input }) => {
@@ -22,6 +23,7 @@ const categoriesRouter = router({
         id: z.string(),
         name: z.string(),
         colour: z.string(),
+        description: z.string(),
       }),
     )
     .mutation(async ({ input }) => {

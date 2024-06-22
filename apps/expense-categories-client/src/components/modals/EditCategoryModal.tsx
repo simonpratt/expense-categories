@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, ControlGroup, Form, Input, Modal, Spacer, Text } from '@dtdot/lego';
+import { Button, ControlGroup, Form, Input, Modal, Spacer, Text, TextArea } from '@dtdot/lego';
 import { apiConnector } from '../../core/api.connector';
 import ColorPicker from './ColorPicker';
 import { SpendingCategory } from '../../core/api.types';
@@ -13,13 +13,14 @@ interface EditCategoryModalProps {
 interface FormProps {
   name: string;
   colour: string;
+  description: string;
 }
 
 const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ category, onClose, onInvalidateData }) => {
   const { mutateAsync, isPending } = apiConnector.app.categories.updateCategory.useMutation();
   const [formValue, setFormValue] = useState<FormProps>(category);
 
-  const handleAddCategory = async () => {
+  const handleSaveCategory = async () => {
     await mutateAsync({ id: category.id, ...formValue });
     onInvalidateData();
     onClose();
@@ -32,6 +33,7 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ category, onClose
         <Form value={formValue} onChange={setFormValue}>
           <ControlGroup variation='comfortable'>
             <Input name='name' label='Name' />
+            <TextArea name='description' label='Description' />
             <div>
               <Text>Colour</Text>
               <Spacer size='1x' />
@@ -40,7 +42,7 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ category, onClose
                 onSelectColor={(colour) => setFormValue({ ...formValue, colour })}
               />
             </div>
-            <Button loading={isPending} onClick={handleAddCategory} data-testid='button-save'>
+            <Button loading={isPending} onClick={handleSaveCategory} data-testid='button-save'>
               Save Category
             </Button>
           </ControlGroup>
