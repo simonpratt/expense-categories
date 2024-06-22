@@ -1,15 +1,8 @@
 import React from 'react';
-import { TableRow, TableCell, Select, MenuItem, Box, ListItemIcon, ListItemText } from '@mui/material';
-import { Visibility } from '@mui/icons-material';
-import { useTheme } from '@mui/material/styles';
-import styled from 'styled-components';
+import { TableRow, TableCell } from '@mui/material';
 import { SpendingCategory, TransactionSummary } from '../../../core/api.types';
 import { tableColumns } from './tableColumns';
-import ColorSquare from '../../common/ColorSquare';
-
-const SelectNameDisplay = styled.span`
-  padding-left: 16px;
-`;
+import CategorySelect from './CategorySelect';
 
 interface TableRowComponentProps {
   'context': {
@@ -22,7 +15,6 @@ interface TableRowComponentProps {
 }
 
 const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
-  const theme = useTheme();
   const { categories, handleCategoryChange, handleIgnore } = context;
   const index = props['data-index'];
   const row = context.transactionSummaries[index];
@@ -39,46 +31,13 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                 );
               case 'category':
                 return (
-                  <Select
+                  <CategorySelect
+                    categories={categories}
                     value={row.spendingCategoryId || ''}
-                    onChange={(e) =>
-                      e.target.value === 'ignore' ? handleIgnore(row.id) : handleCategoryChange(row.id, e.target.value)
+                    onChange={(value) =>
+                      value === 'ignore' ? handleIgnore(row.id) : handleCategoryChange(row.id, value)
                     }
-                    displayEmpty
-                    fullWidth
-                    renderValue={(selected) => {
-                      const selectedCategory = categories.find((category) => category.id === selected);
-                      return (
-                        <Box display='flex' alignItems='center'>
-                          <ColorSquare colorKey={selectedCategory?.colour} />
-                          <SelectNameDisplay>
-                            {selectedCategory ? selectedCategory.name : 'Uncategorised'}
-                          </SelectNameDisplay>
-                        </Box>
-                      );
-                    }}
-                  >
-                    <MenuItem value='ignore'>
-                      <ListItemIcon>
-                        <Visibility style={{ color: theme.palette.text.primary }} />
-                      </ListItemIcon>
-                      <ListItemText primary='Ignore' />
-                    </MenuItem>
-                    <MenuItem value=''>
-                      <ListItemIcon>
-                        <ColorSquare colorKey={'grey'} />
-                      </ListItemIcon>
-                      <ListItemText primary='Uncategorised' />
-                    </MenuItem>
-                    {categories.map((category) => (
-                      <MenuItem key={category.id} value={category.id}>
-                        <ListItemIcon>
-                          <ColorSquare colorKey={category.colour} />
-                        </ListItemIcon>
-                        <ListItemText primary={category.name} />
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  />
                 );
               default:
                 return row[column.dataKey as keyof typeof row];
