@@ -70,11 +70,12 @@ export const getCategories = async () => {
   return prisma.spendingCategory.findMany();
 };
 
-export const addCategory = async (category: { name: string; colour: string }) => {
+export const addCategory = async (category: { name: string; colour: string; description: string }) => {
   return prisma.spendingCategory.create({
     data: {
       name: category.name,
       colour: category.colour,
+      description: category.description,
     },
   });
 };
