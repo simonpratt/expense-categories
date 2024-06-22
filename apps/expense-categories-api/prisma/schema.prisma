@@ -15,6 +15,7 @@ datasource db {
 model SpendingCategory {
   id                  String                @id @default(uuid())
   name                String                @unique
+  description         String?
   colour              String
   TransactionCategory TransactionCategory[]
 }
