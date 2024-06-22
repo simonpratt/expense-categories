@@ -3,8 +3,8 @@ import environment from '../core/environment';
 import { z } from 'zod';
 import { jsonHelpers } from '../helpers/jsonHelpers';
 import { prisma } from '../core/prisma.client';
-import { generateCategorisationPrompt } from '../prompts/categorisation.prompt';
 import { TRPCError } from '@trpc/server';
+import { generateAutoCategorisationPrompt, generateTransactionSearchPrompt } from '../prompts/categorisation.prompt';
 
 const client = new Anthropic({
   apiKey: environment.ANTHROPIC_API_KEY,
@@ -15,7 +15,13 @@ const TransactionSchema = z.object({
   confidence: z.string(),
 });
 
-interface getRecommendationsOutput {
+const CategorisedTransactionSchema = z.object({
+  description: z.string(),
+  category: z.string(),
+  confidence: z.string(),
+});
+
+export interface TransactionSearchOutput {
   id: string;
   description: string;
   totalDebit: number;
@@ -23,7 +29,55 @@ interface getRecommendationsOutput {
   confidence: string;
 }
 
-export async function* getRecommendations(spendingCategoryId: string): AsyncGenerator<getRecommendationsOutput> {
+export interface AutoCategoriseRecommendationsOutput {
+  id: string;
+  description: string;
+  totalDebit: number;
+  totalFrequency: number;
+  spendingCategoryId: string;
+  confidence: string;
+}
+
+export async function* getAutoCategoriseRecommendations(): AsyncGenerator<AutoCategoriseRecommendationsOutput> {
+  const transactions = await prisma.transactionCategory.findMany({
+    where: { ignored: false, spendingCategoryId: null },
+    orderBy: { totalDebit: 'desc' },
+    take: 10,
+  });
+  const categories = await prisma.spendingCategory.findMany();
+
+  const stream = await client.messages.stream({
+    messages: [
+      {
+        role: 'user',
+        content: generateAutoCategorisationPrompt(
+          transactions.map((tx) => tx.description),
+          categories.map((c) => c.name),
+        ),
+      },
+    ],
+    model: 'claude-3-5-sonnet-20240620',
+    max_tokens: 1024,
+  });
+
+  for await (const chunk of jsonHelpers.extractAndYieldObjects(stream, CategorisedTransactionSchema)) {
+    const matchingTransaction = transactions.find((tx) => tx.description === chunk.description);
+    const matchingCategory = categories.find((category) => category.name === chunk.category);
+
+    if (matchingTransaction && matchingCategory) {
+      yield {
+        id: matchingTransaction.id,
+        description: chunk.description,
+        totalDebit: matchingTransaction.totalDebit,
+        totalFrequency: matchingTransaction.totalFrequency,
+        spendingCategoryId: matchingCategory.id,
+        confidence: chunk.confidence,
+      };
+    }
+  }
+}
+
+export async function* getRecommendations(spendingCategoryId: string): AsyncGenerator<TransactionSearchOutput> {
   const transactions = await prisma.transactionCategory.findMany({
     where: { ignored: false, spendingCategoryId: null },
     orderBy: { totalDebit: 'desc' },
@@ -41,7 +95,7 @@ export async function* getRecommendations(spendingCategoryId: string): AsyncGene
     messages: [
       {
         role: 'user',
-        content: generateCategorisationPrompt(
+        content: generateTransactionSearchPrompt(
           transactions.map((tx) => tx.description),
           categories.map((c) => c.name),
           selectedCategory.name,

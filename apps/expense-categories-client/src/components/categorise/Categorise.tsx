@@ -13,8 +13,9 @@ import TableRowComponent from './table/TableRowComponent';
 import TableHeaderCell from './table/TableHeaderCell';
 import { TransactionSummary } from '../../core/api.types';
 import AICategorisationBanner from './AICategorisationBanner';
-import AICategorisationModal from './AICategorisationModal';
+import AISearchTransactionsModal from './AISearchTransactionsModal';
 import { FilterCategory, systemCategories, systemCategoryUncategorised } from './filterCategories';
+import AIAutoCategoriseModal from './AIAutoCategoriseModal';
 
 const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
   Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
@@ -40,7 +41,8 @@ const Categorise = () => {
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>(systemCategoryUncategorised);
-  const [isAIModalOpen, setAIModalOpen] = useState(false);
+  const [isAISearchTransactionsOpen, setAISearchTransactionsOpen] = useState(false);
+  const [isAIAutoCategoriseOpen, setAIAutoCategoriseOpen] = useState(false);
 
   const categories: FilterCategory[] = [
     ...systemCategories,
@@ -89,7 +91,18 @@ const Categorise = () => {
           onDeleteCategory={handleDeleteCategory}
         />
         {selectedCategory && selectedCategory.fromDatabase && (
-          <AICategorisationBanner onStartCategorisation={() => setAIModalOpen(true)} />
+          <AICategorisationBanner
+            message='Search for Transactions'
+            subMessage='Search your uncategorised transactions for matches'
+            onStart={() => setAISearchTransactionsOpen(true)}
+          />
+        )}
+        {selectedCategory.id === 'uncategorised' && (
+          <AICategorisationBanner
+            message='Auto-categorise'
+            subMessage='Auto-categorise the top transactions'
+            onStart={() => setAIAutoCategoriseOpen(true)}
+          />
         )}
         <Spacer size='1x' />
         <div style={{ width: '100%', height: 'calc(100vh - 140px)' }}>
@@ -117,10 +130,16 @@ const Categorise = () => {
           onInvalidateData={refetchCategories}
         />
       )}
-      {isAIModalOpen && dbCategory && (
-        <AICategorisationModal
+      {isAISearchTransactionsOpen && dbCategory && (
+        <AISearchTransactionsModal
           category={dbCategory}
-          onClose={() => setAIModalOpen(false)}
+          onClose={() => setAISearchTransactionsOpen(false)}
+          onInvalidateData={() => refetchTransactionSummaries()}
+        />
+      )}
+      {isAIAutoCategoriseOpen && (
+        <AIAutoCategoriseModal
+          onClose={() => setAIAutoCategoriseOpen(false)}
           onInvalidateData={() => refetchTransactionSummaries()}
         />
       )}

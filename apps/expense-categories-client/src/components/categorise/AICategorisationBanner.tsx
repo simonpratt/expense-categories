@@ -4,10 +4,12 @@ import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { Button } from '@dtdot/lego';
 
 export interface AICategorisationBannerProps {
-  onStartCategorisation: () => void;
+  message: string;
+  subMessage: string;
+  onStart: () => void;
 }
 
-const AICategorisationBanner = ({ onStartCategorisation }: AICategorisationBannerProps) => {
+const AICategorisationBanner = ({ message, subMessage, onStart }: AICategorisationBannerProps) => {
   return (
     <Paper elevation={1} sx={{ mb: 2, mt: 1 }}>
       <Box display='flex' alignItems='center' justifyContent='space-between' p={2}>
@@ -15,14 +17,14 @@ const AICategorisationBanner = ({ onStartCategorisation }: AICategorisationBanne
           <AutoFixHighIcon sx={{ fontSize: 40, mr: 2, color: 'primary' }} />
           <Box>
             <Typography variant='h6' component='h3'>
-              AI-Powered Categorization
+              {message}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              Let AI help you categorize your transactions quickly and accurately.
+              {subMessage}
             </Typography>
           </Box>
         </Box>
-        <Button variant='primary' onClick={onStartCategorisation}>
+        <Button variant='primary' onClick={onStart}>
           Start Now
         </Button>
       </Box>

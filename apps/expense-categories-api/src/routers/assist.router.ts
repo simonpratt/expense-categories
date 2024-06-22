@@ -1,10 +1,13 @@
 import { router, authenticatedProcedure } from '../core/trpc.base';
 
 import { z } from 'zod';
-import { getRecommendations } from '../services/assist.service';
+import { getAutoCategoriseRecommendations, getRecommendations } from '../services/assist.service';
 
 const assistRouter = router({
-  getRecommendations: authenticatedProcedure
+  getAutoCategoriseRecommendations: authenticatedProcedure.query(async function* () {
+    yield* getAutoCategoriseRecommendations();
+  }),
+  searchForTransactions: authenticatedProcedure
     .input(
       z.object({
         spendingCategoryId: z.string(),

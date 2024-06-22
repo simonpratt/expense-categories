@@ -4,7 +4,7 @@ import { apiConnector } from '../../core/api.connector';
 import { SpendingCategory } from '../../core/api.types';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Chip } from '@mui/material';
 
-interface AICategorisationModalProps {
+interface AISearchTransactionsModalProps {
   category: SpendingCategory;
   onClose: () => void;
   onInvalidateData: () => void;
@@ -21,11 +21,15 @@ const getDefaultSelectedVal = (confidence: string) => {
   }
 };
 
-const AICategorisationModal: React.FC<AICategorisationModalProps> = ({ category, onClose, onInvalidateData }) => {
+const AISearchTransactionsModal: React.FC<AISearchTransactionsModalProps> = ({
+  category,
+  onClose,
+  onInvalidateData,
+}) => {
   const [selections, setSelections] = useState<Record<string, boolean>>({});
   const { mutateAsync: assignSpendingCategories, isPending: savingCategories } =
     apiConnector.app.transactions.bulkAssignSpendingCategory.useMutation();
-  const { data } = apiConnector.app.assist.getRecommendations.useQuery(
+  const { data } = apiConnector.app.assist.searchForTransactions.useQuery(
     { spendingCategoryId: category.id },
     {
       refetchOnWindowFocus: false,
@@ -58,7 +62,7 @@ const AICategorisationModal: React.FC<AICategorisationModalProps> = ({ category,
   };
 
   const getConfidenceChipProps = (confidence: string) => {
-    switch (confidence) {
+    switch (confidence.toLowerCase()) {
       case 'high':
         return { color: 'success' as const, label: 'High' };
       case 'medium':
@@ -72,7 +76,7 @@ const AICategorisationModal: React.FC<AICategorisationModalProps> = ({ category,
 
   return (
     <Modal onClose={onClose}>
-      <Modal.Header header={`AI Categorisation: ${category.name}`} />
+      <Modal.Header header={`Search Transactions`} />
       <Modal.Body>
         {data?.length ? (
           <TableContainer component={Paper}>
@@ -124,4 +128,4 @@ const AICategorisationModal: React.FC<AICategorisationModalProps> = ({ category,
   );
 };
 
-export default AICategorisationModal;
+export default AISearchTransactionsModal;

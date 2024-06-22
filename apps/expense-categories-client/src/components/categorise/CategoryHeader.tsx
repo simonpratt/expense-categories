@@ -10,6 +10,7 @@ const CustomHeading = styled(Heading.SubHeading)`
   height: 40px;
   display: flex;
   align-items: center;
+  padding-left: 8px;
 `;
 
 interface CategoryHeaderProps {
