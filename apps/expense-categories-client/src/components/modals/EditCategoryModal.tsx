@@ -18,7 +18,7 @@ interface FormProps {
 
 const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ category, onClose, onInvalidateData }) => {
   const { mutateAsync, isPending } = apiConnector.app.categories.updateCategory.useMutation();
-  const [formValue, setFormValue] = useState<FormProps>(category);
+  const [formValue, setFormValue] = useState<FormProps>({ ...category, description: category.description || '' });
 
   const handleSaveCategory = async () => {
     await mutateAsync({ id: category.id, ...formValue });

@@ -79,12 +79,13 @@ export const addCategory = async (category: { name: string; colour: string }) =>
   });
 };
 
-export const updateCategory = async (category: { id: string; name: string; colour: string }) => {
+export const updateCategory = async (category: { id: string; name: string; description: string; colour: string }) => {
   return prisma.spendingCategory.update({
     where: { id: category.id },
     data: {
       name: category.name,
       colour: category.colour,
+      description: category.description,
     },
   });
 };
