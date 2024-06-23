@@ -52,7 +52,7 @@ export async function* getAutoCategoriseRecommendations(): AsyncGenerator<AutoCa
         role: 'user',
         content: generateAutoCategorisationPrompt(
           transactions.map((tx) => tx.description),
-          categories.map((c) => c.name),
+          categories,
         ),
       },
     ],
@@ -97,8 +97,8 @@ export async function* getRecommendations(spendingCategoryId: string): AsyncGene
         role: 'user',
         content: generateTransactionSearchPrompt(
           transactions.map((tx) => tx.description),
-          categories.map((c) => c.name),
-          selectedCategory.name,
+          categories,
+          selectedCategory,
         ),
       },
     ],

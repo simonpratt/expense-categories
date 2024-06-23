@@ -5,6 +5,7 @@ const configSchema = z.object({
   SERVER_PORT: z.coerce.number(),
   DATABASE_URL: z.string(),
   ANTHROPIC_API_KEY: z.string(),
+  GEOGRAPHIC_LOCATION_STRING: z.string(),
 });
 
 const environment = configSchema.parse(process.env);

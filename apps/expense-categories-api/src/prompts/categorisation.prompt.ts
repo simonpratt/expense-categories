@@ -1,31 +1,39 @@
+import environment from "../core/environment";
+
 export const generateTransactionSearchPrompt = (
   transactions: string[],
-  categories: string[],
-  targetCategory: string,
+  categories: { name: string; description: string | null }[],
+  targetCategory: { name: string; description: string | null },
 ) => {
-  return `You will be analyzing a list of bank transactions to identify which ones best fit a specific spending category. You will also assign a confidence level to each match. Here's how to proceed:
+  return `You will be analyzing a list of bank transactions to identify which ones best fit a specific spending category, taking into account a fixed geographic location for all transactions. You will also assign a confidence level to each match. Here's how to proceed:
 
-First, review the list of transactions:
+First, note the geographic location that applies to all transactions:
+<geographic_context>
+${environment.GEOGRAPHIC_LOCATION_STRING}
+</geographic_context>
+
+Next, review the list of transactions:
 <transactions>
 ${transactions.join('\n')}
 </transactions>
 
-Next, familiarize yourself with the available spending categories:
+Next, familiarize yourself with the available spending categories and their descriptions:
 <categories>
-${categories.join('\n')}
+${JSON.stringify(categories.map((c) => ({ name: c.name, description: c.description })))}
 </categories>
 
 The category we're focusing on is:
 <target_category>
-${targetCategory}
+${JSON.stringify({ name: targetCategory.name, description: targetCategory.description })}
 </target_category>
 
 Your task is to go through each transaction and determine if it belongs to the target category. For each transaction that you believe fits the category, you should also assign a confidence level (low, medium, or high).
 
 When analyzing each transaction:
 1. Look at the transaction description.
-2. Consider if the transaction could reasonably belong to the target category.
-3. If you believe it does, determine your confidence level in this classification.
+2. Consider the provided geographic context and how it might influence spending patterns or merchant names in this category.
+3. Consider if the transaction could reasonably belong to the target category.
+4. If you believe it does, determine your confidence level in this classification.
 
 To determine confidence levels:
 - High: You are very certain the transaction belongs to the target category.
@@ -46,25 +54,34 @@ Provide your output in JSON format as follows:
 Include only the transactions you believe belong to the target category. The "transactions" array should be ordered from highest to lowest confidence.`;
 };
 
-export const generateAutoCategorisationPrompt = (transactions: string[], categories: string[]) => {
-  return `You will be analyzing a list of bank transactions to identify which ones best fit a specific spending category. You will also assign a confidence level to each match. Here's how to proceed:
+export const generateAutoCategorisationPrompt = (
+  transactions: string[],
+  categories: { name: string; description: string | null }[],
+) => {
+  return `You will be analyzing a list of bank transactions to identify which ones best fit a specific spending category, taking into account a fixed geographic location for all transactions. You will also assign a confidence level to each match. Here's how to proceed:
 
-First, review the list of transactions:
+First, note the geographic location that applies to all transactions:
+<geographic_context>
+${environment.GEOGRAPHIC_LOCATION_STRING}
+</geographic_context>
+
+Next, review the list of transactions:
 <transactions>
 ${transactions.join('\n')}
 </transactions>
 
 Next, familiarize yourself with the available spending categories:
 <categories>
-${categories.join('\n')}
+${JSON.stringify(categories.map((c) => ({ name: c.name, description: c.description })))}
 </categories>
 
 Your task is to go through each transaction and determine which category is the best fit for it. For each transaction you should also assign a confidence level (low, medium, or high).
 
 When analyzing each transaction:
 1. Look at the transaction description.
-2. Consider if the transaction could reasonably belong to each category.
-3. For the category you decide is the best match, determine your confidence level in this classification.
+2. Consider the provided geographic context and how it might influence spending patterns or merchant names for each category. 
+3. Consider if the transaction could reasonably belong to each category.
+4. For the category you decide is the best match, determine your confidence level in this classification.
 
 To determine confidence levels:
 - High: You are very certain the transaction belongs to the target category.
