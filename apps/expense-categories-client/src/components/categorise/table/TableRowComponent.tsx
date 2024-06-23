@@ -8,7 +8,7 @@ interface TableRowComponentProps {
   'context': {
     categories: SpendingCategory[];
     transactionSummaries: TransactionSummary[];
-    handleCategoryChange: (transactionSummaryId: string, spendingCategoryId: string) => void;
+    handleCategoryChange: (transactionSummaryId: string, spendingCategoryId?: string) => void;
     handleIgnore: (transactionSummaryId: string) => void;
   };
   'data-index': number;
@@ -33,9 +33,11 @@ const TableRowComponent = ({ context, ...props }: TableRowComponentProps) => {
                 return (
                   <CategorySelect
                     categories={categories}
-                    value={row.spendingCategoryId || ''}
+                    value={row.ignored ? 'ignored' : row.spendingCategoryId || 'uncategorised'}
                     onChange={(value) =>
-                      value === 'ignore' ? handleIgnore(row.id) : handleCategoryChange(row.id, value)
+                      value === 'ignored'
+                        ? handleIgnore(row.id)
+                        : handleCategoryChange(row.id, value === 'uncategorised' ? undefined : value)
                     }
                   />
                 );

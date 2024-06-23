@@ -14,7 +14,12 @@ import TableHeaderCell from './table/TableHeaderCell';
 import { TransactionSummary } from '../../core/api.types';
 import AICategorisationBanner from './AICategorisationBanner';
 import AISearchTransactionsModal from './AISearchTransactionsModal';
-import { FilterCategory, systemCategories, systemCategoryUncategorised } from './filterCategories';
+import {
+  FilterCategory,
+  spendingCategoryToFilterCategory,
+  systemCategories,
+  systemCategoryUncategorised,
+} from './filterCategories';
 import AIAutoCategoriseModal from './AIAutoCategoriseModal';
 
 const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
@@ -46,13 +51,7 @@ const Categorise = () => {
 
   const categories: FilterCategory[] = [
     ...systemCategories,
-    ...(dbCategories || [])
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((category) => ({
-        ...category,
-        fromDatabase: true,
-        filterFn: (tx: TransactionSummary) => tx.spendingCategoryId === category.id,
-      })),
+    ...(dbCategories || []).sort((a, b) => a.name.localeCompare(b.name)).map(spendingCategoryToFilterCategory),
   ];
 
   const handleDeleteCategory = async () => {

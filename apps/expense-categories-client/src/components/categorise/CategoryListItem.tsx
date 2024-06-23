@@ -1,7 +1,6 @@
 import React from 'react';
 import { ListItem, ListItemText, ListItemIcon, useTheme } from '@mui/material';
 import { useTheme as useStyledTheme } from 'styled-components';
-import ColorSquare from '../common/ColorSquare';
 import { FilterCategory } from './filterCategories';
 
 interface CategoryListItemProps {
@@ -27,7 +26,7 @@ const CategoryListItem: React.FC<CategoryListItemProps> = ({ category, isSelecte
         'cursor': 'pointer',
       }}
     >
-      <ListItemIcon>{<ColorSquare colorKey={category.colour} />}</ListItemIcon>
+      <ListItemIcon>{category.icon}</ListItemIcon>
       <ListItemText
         primary={
           <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
