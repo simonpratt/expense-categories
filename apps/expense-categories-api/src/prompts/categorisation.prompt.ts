@@ -1,4 +1,4 @@
-import environment from "../core/environment";
+import environment from '../core/environment';
 
 export const generateTransactionSearchPrompt = (
   transactions: string[],
@@ -100,5 +100,5 @@ Provide your output in JSON format as follows:
 ]
 </output>
 
-Include all transactions. The "transactions" array should be ordered in alphabetical order based on the category name.`;
+Include all transactions. The "transactions" array should be ordered in the same order that the transaction list was provided in.`;
 };

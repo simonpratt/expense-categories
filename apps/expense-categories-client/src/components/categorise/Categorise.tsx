@@ -1,5 +1,5 @@
 // my-table.ts
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Spacer, Loader } from '@dtdot/lego';
 import { Box, Table, TableBody, TableContainer, TableHead, Paper } from '@mui/material';
@@ -20,7 +20,6 @@ import {
   systemCategories,
   systemCategoryUncategorised,
 } from './filterCategories';
-import AIAutoCategoriseModal from './AIAutoCategoriseModal';
 
 const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
   Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
@@ -35,9 +34,10 @@ const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
 };
 
 const Categorise = () => {
+  const autoCategoriseProcessed = useRef<string[]>([]);
   const {
     transactionSummaries,
-    handleCategoryChange,
+    handleCategoryChange: handleCategoryChangeServiceFn,
     handleIgnore,
     refetch: refetchTransactionSummaries,
   } = useTransactionSummaries();
@@ -45,14 +45,59 @@ const Categorise = () => {
   const { mutateAsync: deleteCategory } = apiConnector.app.categories.deleteCategory.useMutation();
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [snapshotIdFilter, setSnapshotIdFilter] = useState<string[] | undefined>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>(systemCategoryUncategorised);
   const [isAISearchTransactionsOpen, setAISearchTransactionsOpen] = useState(false);
   const [isAIAutoCategoriseOpen, setAIAutoCategoriseOpen] = useState(false);
+  const {
+    data,
+    refetch: refetchRecommendations,
+    isFetching: recommendationsPending,
+  } = apiConnector.app.assist.getAutoCategoriseRecommendations.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    enabled: isAIAutoCategoriseOpen,
+  });
+
+  const handleCategoryChange = useCallback(
+    (transactionSummaryId: string, spendingCategoryId?: string) => {
+      autoCategoriseProcessed.current.push(transactionSummaryId);
+      handleCategoryChangeServiceFn(transactionSummaryId, spendingCategoryId);
+    },
+    [handleCategoryChangeServiceFn],
+  );
+
+  useEffect(() => {
+    const unprocessed = data?.filter((d) => !autoCategoriseProcessed.current.includes(d.id));
+    if (!unprocessed?.length) {
+      return;
+    }
+
+    unprocessed.forEach((u) => {
+      handleCategoryChange(u.id, u.spendingCategoryId);
+    });
+  }, [data, handleCategoryChange]);
 
   const categories: FilterCategory[] = [
     ...systemCategories,
     ...(dbCategories || []).sort((a, b) => a.name.localeCompare(b.name)).map(spendingCategoryToFilterCategory),
   ];
+
+  const handleStartCategorisation = async () => {
+    if (!snapshotIdFilter) {
+      setSnapshotIdFilter(transactionSummaries.filter(selectedCategory.filterFn).map((tx) => tx.id));
+    }
+
+    if (!isAIAutoCategoriseOpen) {
+      setAIAutoCategoriseOpen(true);
+    } else {
+      refetchRecommendations();
+    }
+  };
+
+  const handleCategoryFilterChange = (category: FilterCategory) => {
+    setSelectedCategory(category);
+    setSnapshotIdFilter(undefined);
+  };
 
   const handleDeleteCategory = async () => {
     if (selectedCategory?.id && selectedCategory.fromDatabase) {
@@ -72,7 +117,9 @@ const Categorise = () => {
     return <Loader variant='page-loader' />;
   }
 
-  const renderedData = transactionSummaries.filter(selectedCategory.filterFn);
+  const renderedData = snapshotIdFilter
+    ? transactionSummaries.filter((tx) => snapshotIdFilter.includes(tx.id))
+    : transactionSummaries.filter(selectedCategory.filterFn);
   const dbCategory = dbCategories?.find((category) => category.id === selectedCategory.id);
 
   return (
@@ -80,7 +127,7 @@ const Categorise = () => {
       <CategoryList
         categories={categories}
         selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
+        setSelectedCategory={handleCategoryFilterChange}
         setAddModalOpen={setAddModalOpen}
         transactionSummaries={transactionSummaries}
       />
@@ -101,7 +148,9 @@ const Categorise = () => {
           <AICategorisationBanner
             message='Auto-categorise'
             subMessage='Auto-categorise the top transactions'
-            onStart={() => setAIAutoCategoriseOpen(true)}
+            actionText={snapshotIdFilter ? 'Continue' : 'Start Now'}
+            isPending={recommendationsPending}
+            onStart={handleStartCategorisation}
           />
         )}
         <Spacer size='1x' />
@@ -134,12 +183,6 @@ const Categorise = () => {
         <AISearchTransactionsModal
           category={dbCategory}
           onClose={() => setAISearchTransactionsOpen(false)}
-          onInvalidateData={() => refetchTransactionSummaries()}
-        />
-      )}
-      {isAIAutoCategoriseOpen && (
-        <AIAutoCategoriseModal
-          onClose={() => setAIAutoCategoriseOpen(false)}
           onInvalidateData={() => refetchTransactionSummaries()}
         />
       )}

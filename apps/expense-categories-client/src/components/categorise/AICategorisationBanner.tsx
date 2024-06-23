@@ -6,10 +6,18 @@ import { Button } from '@dtdot/lego';
 export interface AICategorisationBannerProps {
   message: string;
   subMessage: string;
+  actionText?: string;
+  isPending?: boolean;
   onStart: () => void;
 }
 
-const AICategorisationBanner = ({ message, subMessage, onStart }: AICategorisationBannerProps) => {
+const AICategorisationBanner = ({
+  message,
+  subMessage,
+  actionText = 'Start Now',
+  isPending,
+  onStart,
+}: AICategorisationBannerProps) => {
   return (
     <Paper elevation={1} sx={{ mb: 2, mt: 1 }}>
       <Box display='flex' alignItems='center' justifyContent='space-between' p={2}>
@@ -24,8 +32,8 @@ const AICategorisationBanner = ({ message, subMessage, onStart }: AICategorisati
             </Typography>
           </Box>
         </Box>
-        <Button variant='primary' onClick={onStart}>
-          Start Now
+        <Button loading={isPending} variant='primary' onClick={onStart}>
+          {actionText}
         </Button>
       </Box>
     </Paper>

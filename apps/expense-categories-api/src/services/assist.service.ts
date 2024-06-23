@@ -35,6 +35,7 @@ export interface AutoCategoriseRecommendationsOutput {
   totalDebit: number;
   totalFrequency: number;
   spendingCategoryId: string;
+  ignored: boolean;
   confidence: string;
 }
 
@@ -71,6 +72,7 @@ export async function* getAutoCategoriseRecommendations(): AsyncGenerator<AutoCa
         totalDebit: matchingTransaction.totalDebit,
         totalFrequency: matchingTransaction.totalFrequency,
         spendingCategoryId: matchingCategory.id,
+        ignored: matchingTransaction.ignored,
         confidence: chunk.confidence,
       };
     }
