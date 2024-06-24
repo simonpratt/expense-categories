@@ -20,7 +20,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/analyse',
-        element: <Analyse />,
+        element: <Analyse startDate='2024-01-01' />,
       },
       {
         path: '*',

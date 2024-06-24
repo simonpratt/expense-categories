@@ -5,10 +5,14 @@ import {
   assignSpendingCategory,
   bulkAssignSpendingCategory,
   getTransactionCategories,
+  getTransactions,
   ignoreTransactionSummary,
 } from '../services/transaction.service';
 
 const transactionsRouter = router({
+  getTransactions: authenticatedProcedure.query(() => {
+    return getTransactions();
+  }),
   getSummary: authenticatedProcedure.query(() => {
     return getTransactionCategories();
   }),

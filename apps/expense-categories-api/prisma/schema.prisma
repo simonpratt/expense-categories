@@ -40,7 +40,7 @@ model Transaction {
   credit                Float?
   debit                 Float?
   transactionCategoryId String
-  TransctionDescription TransactionCategory @relation(fields: [transactionCategoryId], references: [id])
+  TransactionCategory TransactionCategory @relation(fields: [transactionCategoryId], references: [id])
 }
 
 //4675

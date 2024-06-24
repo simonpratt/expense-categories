@@ -75,12 +75,23 @@ export const recomputeSummaries = async () => {
   }
 };
 
-export const getTransactionCategories = async () => {
-  return prisma.transactionCategory.findMany({ orderBy: { totalDebit: 'desc' } });
+export const getTransactions = async () => {
+  const transactions = await prisma.transaction.findMany({
+    where: { debit: { not: null }, TransactionCategory: { ignored: false } },
+    include: { TransactionCategory: true },
+  });
+
+  return transactions.map((tx) => ({
+    id: tx.id,
+    account: tx.account,
+    debit: tx.debit,
+    date: tx.date,
+    spendingCategoryId: tx.TransactionCategory.spendingCategoryId,
+  }));
 };
 
-export const getAllTransactions = async () => {
-  return prisma.transaction.findMany();
+export const getTransactionCategories = async () => {
+  return prisma.transactionCategory.findMany({ orderBy: { totalDebit: 'desc' } });
 };
 
 export const assignSpendingCategory = async (transactionCategoryId: string, spendingCategoryId?: string) => {
