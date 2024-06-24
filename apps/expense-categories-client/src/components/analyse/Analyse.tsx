@@ -1,19 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { apiConnector } from '../../core/api.connector';
 import { useTheme } from 'styled-components';
 import { colorMapping } from '../../core/colorMapping';
 
 interface AnalyseProps {
-  startDate: string; // ISO date string
-  endDate?: string; // Optional ISO date string
+  startDate: string;
+  endDate?: string;
 }
 
-const Analyse: React.FC<AnalyseProps> = ({ startDate, endDate }) => {
+const StackedAreaChart: React.FC<AnalyseProps> = ({ startDate, endDate }) => {
   const { data: transactions } = apiConnector.app.transactions.getTransactions.useQuery();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
-  const theme = useTheme();
+  const theme: any = useTheme();
+
+  const [hiddenCategories, setHiddenCategories] = useState<string[]>([]);
 
   const chartData = useMemo(() => {
     if (!transactions || !categories) return [];
@@ -28,10 +30,14 @@ const Analyse: React.FC<AnalyseProps> = ({ startDate, endDate }) => {
       return transactionDate >= start && transactionDate <= end;
     });
 
-    const fortnightlyData = filteredTransactions.reduce((acc, transaction) => {
+    const fortnightlyData = filteredTransactions.reduce<Record<string, Record<string, number>>>((acc, transaction) => {
       const date = DateTime.fromISO(transaction.date);
       const fortnightStart = date.startOf('week').plus({ weeks: date.weekday <= 7 ? 0 : 1 });
       const fortnightKey = fortnightStart.toISODate();
+
+      if (!fortnightKey) {
+        return acc;
+      }
 
       if (!acc[fortnightKey]) {
         acc[fortnightKey] = { date: fortnightKey };
@@ -42,7 +48,7 @@ const Analyse: React.FC<AnalyseProps> = ({ startDate, endDate }) => {
       }
 
       const category = transaction.spendingCategoryId
-        ? categoryMap.get(transaction.spendingCategoryId)
+        ? categoryMap.get(transaction.spendingCategoryId) || 'Uncategorized'
         : 'Uncategorized';
       acc[fortnightKey][category] = (acc[fortnightKey][category] || 0) + (transaction.debit || 0);
 
@@ -52,20 +58,41 @@ const Analyse: React.FC<AnalyseProps> = ({ startDate, endDate }) => {
     return Object.values(fortnightlyData).sort((a, b) => a.date.localeCompare(b.date));
   }, [transactions, categories, startDate, endDate]);
 
-  if (!chartData.length) return <div>No data available for the selected date range.</div>;
-
   const getCategoryColor = (categoryName: string) => {
     const category = categories?.find((cat) => cat.name === categoryName);
     return category ? colorMapping[category.colour] || colorMapping.grey : colorMapping.grey;
   };
 
+  const handleLegendClick = (e: any) => {
+    const { dataKey } = e;
+    setHiddenCategories((prevHidden) => {
+      const categoryNames = [...(categories || []).map((cat) => cat.name), 'Uncategorized'];
+      // Check for first click, hide everything else
+      if (!prevHidden.length) {
+        return categoryNames.filter((cat) => cat !== dataKey);
+      }
+
+      const newHidden = prevHidden.includes(dataKey)
+        ? prevHidden.filter((cat) => cat !== dataKey)
+        : [...prevHidden, dataKey];
+
+      // Check for everything hidden => show everything again
+      if (categoryNames.every((name) => newHidden.includes(name))) {
+        return [];
+      }
+
+      return newHidden;
+    });
+  };
+
+  if (!chartData.length) return <div>No data available for the selected date range.</div>;
+
   return (
     <ResponsiveContainer width='100%' height={400}>
-      <BarChart data={chartData}>
+      <AreaChart data={chartData}>
         <XAxis
           dataKey='date'
           tickFormatter={(date) => DateTime.fromISO(date).toFormat('MMM dd')}
-          domain={[startDate, endDate || 'auto']}
           stroke={theme.colours.defaultFont}
           tick={{ fill: theme.colours.defaultFont }}
         />
@@ -81,15 +108,38 @@ const Analyse: React.FC<AnalyseProps> = ({ startDate, endDate }) => {
           itemStyle={{ color: theme.colours.defaultFont }}
           labelStyle={{ color: theme.colours.defaultFont, fontWeight: 'bold' }}
         />
-        <Legend wrapperStyle={{ color: theme.colours.defaultFont }} />
+        <Legend
+          wrapperStyle={{ color: theme.colours.defaultFont }}
+          onClick={handleLegendClick}
+          formatter={(value, entry) => (
+            <span style={{ color: hiddenCategories.includes(entry.dataKey) ? '#999' : theme.colours.defaultFont }}>
+              {value}
+            </span>
+          )}
+        />
         {categories &&
           categories.map((category) => (
-            <Bar key={category.id} dataKey={category.name} stackId='a' fill={getCategoryColor(category.name)} />
+            <Area
+              key={category.id}
+              type='monotone'
+              dataKey={category.name}
+              stackId='1'
+              stroke={getCategoryColor(category.name)}
+              fill={getCategoryColor(category.name)}
+              hide={hiddenCategories.includes(category.name)}
+            />
           ))}
-        <Bar dataKey='Uncategorized' stackId='a' fill={colorMapping.grey} />
-      </BarChart>
+        <Area
+          type='monotone'
+          dataKey='Uncategorized'
+          stackId='1'
+          stroke={colorMapping.grey}
+          fill={colorMapping.grey}
+          hide={hiddenCategories.includes('Uncategorized')}
+        />
+      </AreaChart>
     </ResponsiveContainer>
   );
 };
 
-export default Analyse;
+export default StackedAreaChart;
