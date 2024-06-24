@@ -1,5 +1,5 @@
 // my-table.ts
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { apiConnector } from '../../core/api.connector';
 import { Spacer, Loader } from '@dtdot/lego';
 import { Box, Table, TableBody, TableContainer, TableHead, Paper } from '@mui/material';
@@ -20,6 +20,7 @@ import {
   systemCategories,
   systemCategoryUncategorised,
 } from './filterCategories';
+import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../core/DateRangeContext';
 
 const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
   Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {
@@ -34,6 +35,7 @@ const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
 };
 
 const Categorise = () => {
+  const dateContextVal = useContext(DateRangeContext);
   const autoCategoriseProcessed = useRef<string[]>([]);
   const {
     transactionSummaries,
@@ -53,9 +55,9 @@ const Categorise = () => {
     data,
     refetch: refetchRecommendations,
     isFetching: recommendationsPending,
-  } = apiConnector.app.assist.getAutoCategoriseRecommendations.useQuery(undefined, {
+  } = apiConnector.app.assist.getAutoCategoriseRecommendations.useQuery(getDateQueryParams(dateContextVal), {
     refetchOnWindowFocus: false,
-    enabled: isAIAutoCategoriseOpen,
+    enabled: isAIAutoCategoriseOpen && getDateQueryEnabled(dateContextVal),
   });
 
   const handleCategoryChange = useCallback(

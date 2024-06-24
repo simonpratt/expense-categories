@@ -5,6 +5,7 @@ import { jsonHelpers } from '../helpers/jsonHelpers';
 import { prisma } from '../core/prisma.client';
 import { TRPCError } from '@trpc/server';
 import { generateAutoCategorisationPrompt, generateTransactionSearchPrompt } from '../prompts/categorisation.prompt';
+import { getTransactionSummaries } from './transaction.service';
 
 const client = new Anthropic({
   apiKey: environment.ANTHROPIC_API_KEY,
@@ -39,12 +40,12 @@ export interface AutoCategoriseRecommendationsOutput {
   confidence: string;
 }
 
-export async function* getAutoCategoriseRecommendations(): AsyncGenerator<AutoCategoriseRecommendationsOutput> {
-  const transactions = await prisma.transactionCategory.findMany({
-    where: { ignored: false, spendingCategoryId: null },
-    orderBy: { totalDebit: 'desc' },
-    take: 10,
-  });
+export async function* getAutoCategoriseRecommendations(
+  startDate: Date,
+  endDate: Date,
+): AsyncGenerator<AutoCategoriseRecommendationsOutput> {
+  const allTransactions = await getTransactionSummaries(startDate, endDate);
+  const transactions = allTransactions.filter((tx) => !tx.spendingCategoryId && !tx.ignored).slice(0, 9);
   const categories = await prisma.spendingCategory.findMany();
 
   const stream = await client.messages.stream({
@@ -79,12 +80,13 @@ export async function* getAutoCategoriseRecommendations(): AsyncGenerator<AutoCa
   }
 }
 
-export async function* getRecommendations(spendingCategoryId: string): AsyncGenerator<TransactionSearchOutput> {
-  const transactions = await prisma.transactionCategory.findMany({
-    where: { ignored: false, spendingCategoryId: null },
-    orderBy: { totalDebit: 'desc' },
-    take: 1000,
-  });
+export async function* getRecommendations(
+  spendingCategoryId: string,
+  startDate: Date,
+  endDate: Date,
+): AsyncGenerator<TransactionSearchOutput> {
+  const allTransactions = await getTransactionSummaries(startDate, endDate);
+  const transactions = allTransactions.filter((tx) => !tx.spendingCategoryId && !tx.ignored).slice(0, 999);
   const categories = await prisma.spendingCategory.findMany();
 
   const selectedCategory = categories.find((c) => c.id === spendingCategoryId);

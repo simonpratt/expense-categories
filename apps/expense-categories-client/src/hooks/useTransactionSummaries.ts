@@ -1,9 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { apiConnector } from '../core/api.connector';
 import { TransactionSummary } from '../core/api.types';
+import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../components/core/DateRangeContext';
 
 export const useTransactionSummaries = () => {
-  const { data: _transactionSummaries, refetch } = apiConnector.app.transactions.getSummary.useQuery();
+  const dateContextVal = useContext(DateRangeContext);
+  const { data: _transactionSummaries, refetch } = apiConnector.app.transactions.getTransactionSummaries.useQuery(
+    getDateQueryParams(dateContextVal),
+    {
+      enabled: getDateQueryEnabled(dateContextVal),
+    },
+  );
   const { mutate: assignCategory } = apiConnector.app.transactions.assignSpendingCategory.useMutation();
   const { mutate: ignoreTransactionSummary } = apiConnector.app.transactions.ignoreTransactionSummary.useMutation();
   const [transactionSummaries, setTransactionSummaries] = useState(_transactionSummaries || []);

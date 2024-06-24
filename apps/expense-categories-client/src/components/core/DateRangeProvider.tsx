@@ -6,8 +6,8 @@ interface DateRangeProviderProps {
 }
 
 export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({ children }) => {
-  const [startDate, setStartDate] = useState('0');
-  const [endDate, setEndDate] = useState('0');
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
 
   const dateRangeContextValue: DateRangeContextProps = {
     startDate,

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button, CenteredLayout, ControlGroup, Loader, Modal, Spacer } from '@dtdot/lego';
 import { apiConnector } from '../../core/api.connector';
 import { SpendingCategory } from '../../core/api.types';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Chip } from '@mui/material';
+import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../core/DateRangeContext';
 
 interface AISearchTransactionsModalProps {
   category: SpendingCategory;
@@ -26,13 +27,15 @@ const AISearchTransactionsModal: React.FC<AISearchTransactionsModalProps> = ({
   onClose,
   onInvalidateData,
 }) => {
+  const dateContextVal = useContext(DateRangeContext);
   const [selections, setSelections] = useState<Record<string, boolean>>({});
   const { mutateAsync: assignSpendingCategories, isPending: savingCategories } =
     apiConnector.app.transactions.bulkAssignSpendingCategory.useMutation();
   const { data } = apiConnector.app.assist.searchForTransactions.useQuery(
-    { spendingCategoryId: category.id },
+    { spendingCategoryId: category.id, ...getDateQueryParams(dateContextVal) },
     {
       refetchOnWindowFocus: false,
+      enabled: getDateQueryEnabled(dateContextVal),
     },
   );
 

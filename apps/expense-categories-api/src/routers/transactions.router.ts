@@ -4,18 +4,32 @@ import {
   addManyTransactions,
   assignSpendingCategory,
   bulkAssignSpendingCategory,
-  getTransactionCategories,
+  getTransactionSummaries,
   getTransactions,
   ignoreTransactionSummary,
 } from '../services/transaction.service';
 
 const transactionsRouter = router({
-  getTransactions: authenticatedProcedure.query(() => {
-    return getTransactions();
-  }),
-  getSummary: authenticatedProcedure.query(() => {
-    return getTransactionCategories();
-  }),
+  getTransactions: authenticatedProcedure
+    .input(
+      z.object({
+        startDate: z.coerce.date(),
+        endDate: z.coerce.date(),
+      }),
+    )
+    .query(({ input }) => {
+      return getTransactions(input.startDate, input.endDate);
+    }),
+  getTransactionSummaries: authenticatedProcedure
+    .input(
+      z.object({
+        startDate: z.coerce.date(),
+        endDate: z.coerce.date(),
+      }),
+    )
+    .query(({ input }) => {
+      return getTransactionSummaries(input.startDate, input.endDate);
+    }),
   addMany: authenticatedProcedure
     .input(
       z.object({

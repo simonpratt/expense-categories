@@ -4,11 +4,14 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } f
 import { apiConnector } from '../../core/api.connector';
 import { useTheme } from 'styled-components';
 import { colorMapping } from '../../core/colorMapping';
-import DateRangeContext from '../core/DateRangeContext';
+import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../core/DateRangeContext';
 
 const StackedAreaChart: React.FC = () => {
-  const { startDate, endDate } = useContext(DateRangeContext);
-  const { data: transactions } = apiConnector.app.transactions.getTransactions.useQuery();
+  const dateContextVal = useContext(DateRangeContext);
+  const { data: transactions } = apiConnector.app.transactions.getTransactions.useQuery(
+    getDateQueryParams(dateContextVal),
+    { enabled: getDateQueryEnabled(dateContextVal) },
+  );
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
   const theme: any = useTheme();
 
@@ -17,17 +20,17 @@ const StackedAreaChart: React.FC = () => {
   const chartData = useMemo(() => {
     if (!transactions || !categories) return [];
 
-    const start = DateTime.fromISO(startDate);
-    const end = endDate ? DateTime.fromISO(endDate) : DateTime.now();
+    // const start = DateTime.fromISO(startDate);
+    // const end = endDate ? DateTime.fromISO(endDate) : DateTime.now();
 
     const categoryMap = new Map(categories.map((cat) => [cat.id, cat.name]));
 
-    const filteredTransactions = transactions.filter((transaction) => {
-      const transactionDate = DateTime.fromISO(transaction.date);
-      return transactionDate >= start && transactionDate <= end;
-    });
+    // const filteredTransactions = transactions.filter((transaction) => {
+    //   const transactionDate = DateTime.fromISO(transaction.date);
+    //   return transactionDate >= start && transactionDate <= end;
+    // });
 
-    const fortnightlyData = filteredTransactions.reduce<Record<string, Record<string, number>>>((acc, transaction) => {
+    const fortnightlyData = transactions.reduce<Record<string, Record<string, number>>>((acc, transaction) => {
       const date = DateTime.fromISO(transaction.date);
       const fortnightStart = date.startOf('week').plus({ weeks: date.weekday <= 7 ? 0 : 1 });
       const fortnightKey = fortnightStart.toISODate();
@@ -53,7 +56,7 @@ const StackedAreaChart: React.FC = () => {
     }, {});
 
     return Object.values(fortnightlyData).sort((a, b) => a.date.localeCompare(b.date));
-  }, [transactions, categories, startDate, endDate]);
+  }, [transactions, categories]);
 
   const getCategoryColor = (categoryName: string) => {
     const category = categories?.find((cat) => cat.name === categoryName);

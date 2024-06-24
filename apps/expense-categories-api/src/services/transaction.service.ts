@@ -1,4 +1,5 @@
 import { prisma } from '../core/prisma.client';
+import { TransactionCategory } from '../generated/client';
 
 const sum = (...numbers: number[]) => {
   let initial = 0;
@@ -75,9 +76,16 @@ export const recomputeSummaries = async () => {
   }
 };
 
-export const getTransactions = async () => {
+export const getTransactions = async (startDate: Date, endDate: Date) => {
   const transactions = await prisma.transaction.findMany({
-    where: { debit: { not: null }, TransactionCategory: { ignored: false } },
+    where: {
+      debit: { not: null },
+      TransactionCategory: { ignored: false },
+      date: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
     include: { TransactionCategory: true },
   });
 
@@ -90,8 +98,45 @@ export const getTransactions = async () => {
   }));
 };
 
-export const getTransactionCategories = async () => {
-  return prisma.transactionCategory.findMany({ orderBy: { totalDebit: 'desc' } });
+export const getTransactionSummaries = async (startDate: Date, endDate: Date) => {
+  const transactionsWithCategories = await prisma.transaction.findMany({
+    where: {
+      date: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    include: {
+      TransactionCategory: true,
+    },
+  });
+
+  const categorySummaries = transactionsWithCategories.reduce(
+    (acc, transaction) => {
+      const categoryId = transaction.transactionCategoryId;
+      if (!acc[categoryId]) {
+        acc[categoryId] = {
+          id: categoryId,
+          description: transaction.TransactionCategory.description,
+          totalCredit: 0,
+          totalDebit: 0,
+          totalFrequency: 0,
+          ignored: transaction.TransactionCategory.ignored,
+          spendingCategoryId: transaction.TransactionCategory.spendingCategoryId,
+        };
+      }
+
+      acc[categoryId].totalCredit += transaction.credit || 0;
+      acc[categoryId].totalDebit += transaction.debit || 0;
+      acc[categoryId].totalFrequency += 1;
+
+      return acc;
+    },
+    {} as Record<string, TransactionCategory>,
+  );
+
+  return Object.values(categorySummaries).sort((a, b) => b.totalDebit - a.totalDebit);
+  // return prisma.transactionCategory.findMany({ orderBy: { totalDebit: 'desc' } });
 };
 
 export const assignSpendingCategory = async (transactionCategoryId: string, spendingCategoryId?: string) => {
