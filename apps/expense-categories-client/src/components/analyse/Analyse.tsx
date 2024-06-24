@@ -1,16 +1,13 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { apiConnector } from '../../core/api.connector';
 import { useTheme } from 'styled-components';
 import { colorMapping } from '../../core/colorMapping';
+import DateRangeContext from '../core/DateRangeContext';
 
-interface AnalyseProps {
-  startDate: string;
-  endDate?: string;
-}
-
-const StackedAreaChart: React.FC<AnalyseProps> = ({ startDate, endDate }) => {
+const StackedAreaChart: React.FC = () => {
+  const { startDate, endDate } = useContext(DateRangeContext);
   const { data: transactions } = apiConnector.app.transactions.getTransactions.useQuery();
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
   const theme: any = useTheme();

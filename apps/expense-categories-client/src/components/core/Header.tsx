@@ -2,8 +2,14 @@ import { Button, MinimalMenu } from '@dtdot/lego';
 import React, { useState } from 'react';
 
 import UploadCsvModal from '../modals/UploadCsvModal';
+import DateRangeSelect from './DateRangeSelect';
+import styled from 'styled-components';
 
-const Header = () => {
+const ControlContainer = styled.div`
+  display: flex;
+`;
+
+const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -13,11 +19,12 @@ const Header = () => {
     <>
       <MinimalMenu.Header
         rightContent={
-          <div>
-            <Button variant='primary' size='sm' onClick={handleOpen}>
+          <ControlContainer>
+            <DateRangeSelect />
+            <Button variant='primary' onClick={handleOpen}>
               Upload CSV
             </Button>
-          </div>
+          </ControlContainer>
         }
       ></MinimalMenu.Header>
       {open && <UploadCsvModal onClose={handleClose} />}

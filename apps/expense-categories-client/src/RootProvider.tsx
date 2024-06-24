@@ -5,6 +5,7 @@ import { NotificationProvider, Notifications } from '@dtdot/notifications';
 import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { DialoguesProvider } from '@dtdot/dialogues';
 import { TRPCProvider } from './core/tRPC.provider';
+import DateRangeProvider from './components/core/DateRangeProvider';
 
 export interface RootProviderProps {
   children: React.ReactNode;
@@ -53,9 +54,11 @@ const RootProvider = ({ children }: RootProviderProps) => {
         <TRPCProvider>
           <NotificationProvider>
             <DialoguesProvider>
-              <BodyStyle />
-              <Notifications />
-              {children}
+              <DateRangeProvider>
+                <BodyStyle />
+                <Notifications />
+                {children}
+              </DateRangeProvider>
             </DialoguesProvider>
           </NotificationProvider>
         </TRPCProvider>
