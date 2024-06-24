@@ -14,7 +14,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
     "@dtdot/dialogues": "^1.1.1",
-    "@dtdot/lego": "^2.0.0-42",
+    "@dtdot/lego": "^2.0.0-43",
     "@dtdot/notifications": "^1.0.4",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
