@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { apiConnector } from '../../core/api.connector';
@@ -15,45 +15,48 @@ const StackedAreaChart: React.FC = () => {
   const { data: categories } = apiConnector.app.categories.getCategories.useQuery();
   const theme: any = useTheme();
 
-  const [hiddenCategories, setHiddenCategories] = useState<string[]>([]);
+  const [visibleCategories, setVisibleCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Initialize with all categories visible
+    if (categories) {
+      const allCategories = [...categories.map((cat) => cat.name), 'Uncategorized'];
+      setVisibleCategories(allCategories);
+    }
+  }, [categories, setVisibleCategories]);
 
   const chartData = useMemo(() => {
     if (!transactions || !categories) return [];
 
-    // const start = DateTime.fromISO(startDate);
-    // const end = endDate ? DateTime.fromISO(endDate) : DateTime.now();
-
     const categoryMap = new Map(categories.map((cat) => [cat.id, cat.name]));
 
-    // const filteredTransactions = transactions.filter((transaction) => {
-    //   const transactionDate = DateTime.fromISO(transaction.date);
-    //   return transactionDate >= start && transactionDate <= end;
-    // });
+    const fortnightlyData = transactions.reduce<Record<string, { date: string } & Record<string, number>>>(
+      (acc, transaction) => {
+        const date = DateTime.fromISO(transaction.date);
+        const fortnightStart = date.startOf('week').plus({ weeks: date.weekday <= 7 ? 0 : 1 });
+        const fortnightKey = fortnightStart.toISODate();
 
-    const fortnightlyData = transactions.reduce<Record<string, Record<string, number>>>((acc, transaction) => {
-      const date = DateTime.fromISO(transaction.date);
-      const fortnightStart = date.startOf('week').plus({ weeks: date.weekday <= 7 ? 0 : 1 });
-      const fortnightKey = fortnightStart.toISODate();
+        if (!fortnightKey) {
+          return acc;
+        }
 
-      if (!fortnightKey) {
+        if (!acc[fortnightKey]) {
+          acc[fortnightKey] = { date: fortnightKey } as any;
+          categories.forEach((cat) => {
+            acc[fortnightKey][cat.name] = 0;
+          });
+          acc[fortnightKey]['Uncategorized'] = 0;
+        }
+
+        const category = transaction.spendingCategoryId
+          ? categoryMap.get(transaction.spendingCategoryId) || 'Uncategorized'
+          : 'Uncategorized';
+        acc[fortnightKey][category] = (acc[fortnightKey][category] || 0) + (transaction.debit || 0);
+
         return acc;
-      }
-
-      if (!acc[fortnightKey]) {
-        acc[fortnightKey] = { date: fortnightKey };
-        categories.forEach((cat) => {
-          acc[fortnightKey][cat.name] = 0;
-        });
-        acc[fortnightKey]['Uncategorized'] = 0;
-      }
-
-      const category = transaction.spendingCategoryId
-        ? categoryMap.get(transaction.spendingCategoryId) || 'Uncategorized'
-        : 'Uncategorized';
-      acc[fortnightKey][category] = (acc[fortnightKey][category] || 0) + (transaction.debit || 0);
-
-      return acc;
-    }, {});
+      },
+      {},
+    );
 
     return Object.values(fortnightlyData).sort((a, b) => a.date.localeCompare(b.date));
   }, [transactions, categories]);
@@ -65,23 +68,27 @@ const StackedAreaChart: React.FC = () => {
 
   const handleLegendClick = (e: any) => {
     const { dataKey } = e;
-    setHiddenCategories((prevHidden) => {
-      const categoryNames = [...(categories || []).map((cat) => cat.name), 'Uncategorized'];
-      // Check for first click, hide everything else
-      if (!prevHidden.length) {
-        return categoryNames.filter((cat) => cat !== dataKey);
+    setVisibleCategories((prevVisible) => {
+      let newVisible: string[];
+      const allCategories = [...(categories || []).map((cat) => cat.name), 'Uncategorized'];
+
+      if (!allCategories.find((cat) => !prevVisible.includes(cat))) {
+        // All checked
+        newVisible = [dataKey];
+      } else if (prevVisible.includes(dataKey)) {
+        // If clicked category is visible, hide it
+        newVisible = prevVisible.filter((cat) => cat !== dataKey);
+      } else {
+        // If clicked category is hidden, show it
+        newVisible = [...prevVisible, dataKey];
       }
 
-      const newHidden = prevHidden.includes(dataKey)
-        ? prevHidden.filter((cat) => cat !== dataKey)
-        : [...prevHidden, dataKey];
-
-      // Check for everything hidden => show everything again
-      if (categoryNames.every((name) => newHidden.includes(name))) {
-        return [];
+      // If all categories become hidden, show all categories
+      if (newVisible.length === 0) {
+        newVisible = [...(categories || []).map((cat) => cat.name), 'Uncategorized'];
       }
 
-      return newHidden;
+      return newVisible;
     });
   };
 
@@ -112,7 +119,7 @@ const StackedAreaChart: React.FC = () => {
           wrapperStyle={{ color: theme.colours.defaultFont }}
           onClick={handleLegendClick}
           formatter={(value, entry) => (
-            <span style={{ color: hiddenCategories.includes(entry.dataKey) ? '#999' : theme.colours.defaultFont }}>
+            <span style={{ color: !visibleCategories.includes(entry.dataKey) ? '#999' : theme.colours.defaultFont }}>
               {value}
             </span>
           )}
@@ -126,7 +133,7 @@ const StackedAreaChart: React.FC = () => {
               stackId='1'
               stroke={getCategoryColor(category.name)}
               fill={getCategoryColor(category.name)}
-              hide={hiddenCategories.includes(category.name)}
+              hide={!visibleCategories.includes(category.name)}
             />
           ))}
         <Area
@@ -135,7 +142,7 @@ const StackedAreaChart: React.FC = () => {
           stackId='1'
           stroke={colorMapping.grey}
           fill={colorMapping.grey}
-          hide={hiddenCategories.includes('Uncategorized')}
+          hide={!visibleCategories.includes('Uncategorized')}
         />
       </AreaChart>
     </ResponsiveContainer>
