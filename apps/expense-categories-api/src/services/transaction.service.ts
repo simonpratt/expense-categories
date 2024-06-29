@@ -91,6 +91,7 @@ export const getTransactions = async (startDate: Date, endDate: Date) => {
 
   return transactions.map((tx) => ({
     id: tx.id,
+    description: tx.TransactionCategory.description,
     account: tx.account,
     debit: tx.debit,
     date: tx.date,

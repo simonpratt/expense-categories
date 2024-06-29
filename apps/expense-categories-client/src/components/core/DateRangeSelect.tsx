@@ -11,6 +11,7 @@ const StyledSelect = styled(Select)`
 const timeOptions = [
   { value: '14days', label: '14 Days' },
   { value: '30days', label: '30 Days' },
+  { value: '60days', label: '60 Days' },
   { value: '3months', label: '3 Months' },
   { value: '6months', label: '6 Months' },
   { value: '1year', label: '1 Year' },
@@ -35,6 +36,9 @@ const DateRangeSelect: React.FC = () => {
         break;
       case '30days':
         start = now.minus({ days: 29 }).startOf('day');
+        break;
+      case '60days':
+        start = now.minus({ days: 59 }).startOf('day');
         break;
       case '3months':
         start = now.minus({ months: 3 }).startOf('day');

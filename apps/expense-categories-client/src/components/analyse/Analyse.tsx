@@ -5,6 +5,7 @@ import { apiConnector } from '../../core/api.connector';
 import { useTheme } from 'styled-components';
 import { colorMapping } from '../../core/colorMapping';
 import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../core/DateRangeContext';
+import TransactionTable from './TransactionTable';
 
 const StackedAreaChart: React.FC = () => {
   const dateContextVal = useContext(DateRangeContext);
@@ -95,57 +96,62 @@ const StackedAreaChart: React.FC = () => {
   if (!chartData.length) return <div>No data available for the selected date range.</div>;
 
   return (
-    <ResponsiveContainer width='100%' height={400}>
-      <AreaChart data={chartData}>
-        <XAxis
-          dataKey='date'
-          tickFormatter={(date) => DateTime.fromISO(date).toFormat('MMM dd')}
-          stroke={theme.colours.defaultFont}
-          tick={{ fill: theme.colours.defaultFont }}
-        />
-        <YAxis stroke={theme.colours.defaultFont} tick={{ fill: theme.colours.defaultFont }} />
-        <Tooltip
-          formatter={(value, name) => [`$${value.toFixed(2)}`, name]}
-          labelFormatter={(label) => DateTime.fromISO(label).toFormat('MMM dd, yyyy')}
-          contentStyle={{
-            backgroundColor: theme.colours.cardBackground,
-            border: `1px solid ${theme.colours.defaultBorder}`,
-            borderRadius: '4px',
-          }}
-          itemStyle={{ color: theme.colours.defaultFont }}
-          labelStyle={{ color: theme.colours.defaultFont, fontWeight: 'bold' }}
-        />
-        <Legend
-          wrapperStyle={{ color: theme.colours.defaultFont }}
-          onClick={handleLegendClick}
-          formatter={(value, entry) => (
-            <span style={{ color: !visibleCategories.includes(entry.dataKey) ? '#999' : theme.colours.defaultFont }}>
-              {value}
-            </span>
-          )}
-        />
-        {categories &&
-          categories.map((category) => (
-            <Area
-              key={category.id}
-              type='monotone'
-              dataKey={category.name}
-              stackId='1'
-              stroke={getCategoryColor(category.name)}
-              fill={getCategoryColor(category.name)}
-              hide={!visibleCategories.includes(category.name)}
-            />
-          ))}
-        <Area
-          type='monotone'
-          dataKey='Uncategorized'
-          stackId='1'
-          stroke={colorMapping.grey}
-          fill={colorMapping.grey}
-          hide={!visibleCategories.includes('Uncategorized')}
-        />
-      </AreaChart>
-    </ResponsiveContainer>
+    <>
+      <ResponsiveContainer width='100%' height={400}>
+        <AreaChart data={chartData}>
+          <XAxis
+            dataKey='date'
+            tickFormatter={(date) => DateTime.fromISO(date).toFormat('MMM dd')}
+            stroke={theme.colours.defaultFont}
+            tick={{ fill: theme.colours.defaultFont }}
+          />
+          <YAxis stroke={theme.colours.defaultFont} tick={{ fill: theme.colours.defaultFont }} />
+          <Tooltip
+            formatter={(value, name) => [`$${value.toFixed(2)}`, name]}
+            labelFormatter={(label) => DateTime.fromISO(label).toFormat('MMM dd, yyyy')}
+            contentStyle={{
+              backgroundColor: theme.colours.cardBackground,
+              border: `1px solid ${theme.colours.defaultBorder}`,
+              borderRadius: '4px',
+            }}
+            itemStyle={{ color: theme.colours.defaultFont }}
+            labelStyle={{ color: theme.colours.defaultFont, fontWeight: 'bold' }}
+          />
+          <Legend
+            wrapperStyle={{ color: theme.colours.defaultFont }}
+            onClick={handleLegendClick}
+            formatter={(value, entry) => (
+              <span style={{ color: !visibleCategories.includes(entry.dataKey) ? '#999' : theme.colours.defaultFont }}>
+                {value}
+              </span>
+            )}
+          />
+          {categories &&
+            categories.map((category) => (
+              <Area
+                key={category.id}
+                type='monotone'
+                dataKey={category.name}
+                stackId='1'
+                stroke={getCategoryColor(category.name)}
+                fill={getCategoryColor(category.name)}
+                hide={!visibleCategories.includes(category.name)}
+              />
+            ))}
+          <Area
+            type='monotone'
+            dataKey='Uncategorized'
+            stackId='1'
+            stroke={colorMapping.grey}
+            fill={colorMapping.grey}
+            hide={!visibleCategories.includes('Uncategorized')}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+      {transactions?.length && categories?.length && (
+        <TransactionTable transactions={transactions} categories={categories} visibleCategories={visibleCategories} />
+      )}
+    </>
   );
 };
 
