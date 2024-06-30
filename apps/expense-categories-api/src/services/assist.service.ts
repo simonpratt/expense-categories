@@ -1,9 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk';
-import environment from '../core/environment';
-import { z } from 'zod';
-import { jsonHelpers } from '../helpers/jsonHelpers';
-import { prisma } from '../core/prisma.client';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+
+import environment from '../core/environment';
+import { prisma } from '../core/prisma.client';
+import { jsonHelpers } from '../helpers/jsonHelpers';
 import { generateAutoCategorisationPrompt, generateTransactionSearchPrompt } from '../prompts/categorisation.prompt';
 import { getTransactionSummaries } from './transaction.service';
 

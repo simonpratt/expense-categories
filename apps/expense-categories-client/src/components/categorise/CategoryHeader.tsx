@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
-import styled, { useTheme } from 'styled-components';
+
 import { Heading } from '@dtdot/lego';
+
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
+import styled, { useTheme } from 'styled-components';
+
 import { FilterCategory } from './filterCategories';
 
 const CustomHeading = styled(Heading.SubHeading)`

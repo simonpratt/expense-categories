@@ -2,8 +2,8 @@ import React from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
 import App from './App';
-import Categorise from './components/categorise/Categorise';
 import Analyse from './components/analyse/Analyse';
+import Categorise from './components/categorise/Categorise';
 
 const router = createBrowserRouter([
   {

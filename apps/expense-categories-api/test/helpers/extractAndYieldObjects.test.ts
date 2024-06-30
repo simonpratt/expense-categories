@@ -1,5 +1,5 @@
-import { describe, test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
+import { describe, test, beforeEach, afterEach } from 'node:test';
 import sinon from 'sinon';
 import { z } from 'zod';
 

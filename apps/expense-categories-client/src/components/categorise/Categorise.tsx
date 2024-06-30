@@ -1,26 +1,29 @@
 // my-table.ts
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { apiConnector } from '../../core/api.connector';
-import { Spacer, Loader } from '@dtdot/lego';
-import { Box, Table, TableBody, TableContainer, TableHead, Paper } from '@mui/material';
 import { TableVirtuoso, TableComponents } from 'react-virtuoso';
+
+import { Spacer, Loader } from '@dtdot/lego';
+
+import { Box, Table, TableBody, TableContainer, TableHead, Paper } from '@mui/material';
+
+import { apiConnector } from '../../core/api.connector';
+import { TransactionSummary } from '../../core/api.types';
+import { useTransactionSummaries } from '../../hooks/useTransactionSummaries';
+import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../core/DateRangeContext';
 import AddCategoryModal from '../modals/AddCategoryModal';
 import EditCategoryModal from '../modals/EditCategoryModal';
-import CategoryList from './CategoryList';
-import CategoryHeader from './CategoryHeader';
-import { useTransactionSummaries } from '../../hooks/useTransactionSummaries';
-import TableRowComponent from './table/TableRowComponent';
-import TableHeaderCell from './table/TableHeaderCell';
-import { TransactionSummary } from '../../core/api.types';
 import AICategorisationBanner from './AICategorisationBanner';
 import AISearchTransactionsModal from './AISearchTransactionsModal';
+import CategoryHeader from './CategoryHeader';
+import CategoryList from './CategoryList';
 import {
   FilterCategory,
   spendingCategoryToFilterCategory,
   systemCategories,
   systemCategoryUncategorised,
 } from './filterCategories';
-import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../core/DateRangeContext';
+import TableHeaderCell from './table/TableHeaderCell';
+import TableRowComponent from './table/TableRowComponent';
 
 const VirtuosoTableComponents: TableComponents<TransactionSummary> = {
   Scroller: React.forwardRef<HTMLDivElement>(function Scroll(props, ref) {

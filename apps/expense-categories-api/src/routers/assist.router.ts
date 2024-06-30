@@ -1,6 +1,6 @@
-import { router, authenticatedProcedure } from '../core/trpc.base';
-
 import { z } from 'zod';
+
+import { router, authenticatedProcedure } from '../core/trpc.base';
 import { getAutoCategoriseRecommendations, getRecommendations } from '../services/assist.service';
 
 const assistRouter = router({

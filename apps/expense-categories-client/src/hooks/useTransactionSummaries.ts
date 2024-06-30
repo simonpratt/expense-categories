@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
+
+import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../components/core/DateRangeContext';
 import { apiConnector } from '../core/api.connector';
 import { TransactionSummary } from '../core/api.types';
-import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../components/core/DateRangeContext';
 
 export const useTransactionSummaries = () => {
   const dateContextVal = useContext(DateRangeContext);

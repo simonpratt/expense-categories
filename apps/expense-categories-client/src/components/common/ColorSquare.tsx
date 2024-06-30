@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { styled } from '@mui/system';
+
 import { colorMapping } from '../../core/colorMapping';
 
 const ColorSquareStyled = styled('div')(({ color }) => ({

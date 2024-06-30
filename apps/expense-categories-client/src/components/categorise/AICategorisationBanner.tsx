@@ -1,7 +1,9 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
-import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+
 import { Button } from '@dtdot/lego';
+
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import { Box, Typography, Paper } from '@mui/material';
 
 export interface AICategorisationBannerProps {
   message: string;

@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react';
+
 import { Table, TableBody, TableContainer, Paper, TableHead, TableRow, TableCell } from '@mui/material';
-import { Transaction, SpendingCategory } from '../../core/api.types';
-import styled from 'styled-components';
 import { DateTime } from 'luxon';
+import styled from 'styled-components';
+
+import { Transaction, SpendingCategory } from '../../core/api.types';
 import ColorSquare from '../common/ColorSquare';
 
 const Container = styled.div`

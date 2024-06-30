@@ -1,7 +1,10 @@
 import React from 'react';
-import Papa from 'papaparse';
-import { DateTime } from 'luxon';
+
 import { Modal } from '@dtdot/lego';
+
+import { DateTime } from 'luxon';
+import Papa from 'papaparse';
+
 import { apiConnector } from '../../core/api.connector';
 import { parseDescription } from '../../helpers/parseDescription';
 

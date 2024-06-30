@@ -10,9 +10,9 @@ import environment from './core/environment';
 import errors from './core/errors';
 import { configureExpressHealthCheck } from './core/healthcheck';
 import { router } from './core/trpc.base';
-import transactionsRouter from './routers/transactions.router';
-import categoriesRouter from './routers/category.router';
 import assistRouter from './routers/assist.router';
+import categoriesRouter from './routers/category.router';
+import transactionsRouter from './routers/transactions.router';
 
 const logger = createLogger().child({ name: 'server' });
 

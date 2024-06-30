@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
+
 import { Button, CenteredLayout, ControlGroup, Loader, Modal, Spacer } from '@dtdot/lego';
+
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Chip } from '@mui/material';
+
 import { apiConnector } from '../../core/api.connector';
 import { SpendingCategory } from '../../core/api.types';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Chip } from '@mui/material';
 import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../core/DateRangeContext';
 
 interface AISearchTransactionsModalProps {

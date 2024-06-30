@@ -1,6 +1,8 @@
 import React from 'react';
+
 import { ListItem, ListItemText, ListItemIcon, useTheme } from '@mui/material';
 import { useTheme as useStyledTheme } from 'styled-components';
+
 import { FilterCategory } from './filterCategories';
 
 interface CategoryListItemProps {

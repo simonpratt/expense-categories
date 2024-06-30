@@ -1,6 +1,8 @@
 import React from 'react';
+
 import { Select, MenuItem, Box, ListItemIcon, ListItemText } from '@mui/material';
 import styled from 'styled-components';
+
 import { SpendingCategory } from '../../../core/api.types';
 import { selectCategories, spendingCategoryToFilterCategory } from '../filterCategories';
 

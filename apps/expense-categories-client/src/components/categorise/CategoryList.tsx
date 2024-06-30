@@ -1,8 +1,11 @@
 import React from 'react';
+
 import { ControlLine, Button } from '@dtdot/lego';
-import CategoryListItem from './CategoryListItem';
+
 import { Box, List } from '@mui/material';
+
 import { TransactionSummary } from '../../core/api.types';
+import CategoryListItem from './CategoryListItem';
 import { FilterCategory } from './filterCategories';
 
 interface CategoryListProps {

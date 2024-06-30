@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
+
 import { DateTime } from 'luxon';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { apiConnector } from '../../core/api.connector';
 import { useTheme } from 'styled-components';
+
+import { apiConnector } from '../../core/api.connector';
 import { colorMapping } from '../../core/colorMapping';
 import DateRangeContext, { getDateQueryEnabled, getDateQueryParams } from '../core/DateRangeContext';
 import TransactionTable from './TransactionTable';

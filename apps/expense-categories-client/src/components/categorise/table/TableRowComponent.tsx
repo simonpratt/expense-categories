@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { TableRow, TableCell } from '@mui/material';
+
 import { SpendingCategory, TransactionSummary } from '../../../core/api.types';
-import { tableColumns } from './tableColumns';
 import CategorySelect from './CategorySelect';
+import { tableColumns } from './tableColumns';
 
 interface TableRowComponentProps {
   'context': {

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+
 import { Button, ControlGroup, Form, Input, Modal, Spacer, Text, TextArea } from '@dtdot/lego';
+
 import { apiConnector } from '../../core/api.connector';
-import ColorPicker from './ColorPicker';
 import { SpendingCategory } from '../../core/api.types';
+import ColorPicker from './ColorPicker';
 
 interface EditCategoryModalProps {
   category: SpendingCategory;

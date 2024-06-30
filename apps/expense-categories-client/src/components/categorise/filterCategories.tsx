@@ -1,8 +1,10 @@
 import React from 'react';
-import { SpendingCategory, TransactionSummary } from '../../core/api.types';
-import ColorSquare from '../common/ColorSquare';
+
 import { VisibilityOff } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+
+import { SpendingCategory, TransactionSummary } from '../../core/api.types';
+import ColorSquare from '../common/ColorSquare';
 
 const WhiteVisibilityOff = () => {
   const theme = useTheme();

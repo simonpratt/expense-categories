@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { TableRow, TableCell } from '@mui/material';
+
 import { tableColumns } from './tableColumns';
 
 const TableHeaderCell = () => (

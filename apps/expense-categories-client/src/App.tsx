@@ -1,9 +1,12 @@
 import React from 'react';
-import RootProvider from './RootProvider';
 import { Outlet } from 'react-router-dom';
-import Menu from './components/core/Menu';
+
 import { MinimalMenu } from '@dtdot/lego';
+
+import RootProvider from './RootProvider';
 import Header from './components/core/Header';
+import Menu from './components/core/Menu';
+
 function App() {
   return (
     <RootProvider>

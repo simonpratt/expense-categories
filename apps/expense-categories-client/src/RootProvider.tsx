@@ -1,11 +1,14 @@
 import React from 'react';
-import { BodyStyle, Themes } from '@dtdot/lego';
-import { ThemeProvider } from 'styled-components';
-import { NotificationProvider, Notifications } from '@dtdot/notifications';
-import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+
 import { DialoguesProvider } from '@dtdot/dialogues';
-import { TRPCProvider } from './core/tRPC.provider';
+import { BodyStyle, Themes } from '@dtdot/lego';
+import { NotificationProvider, Notifications } from '@dtdot/notifications';
+
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from 'styled-components';
+
 import DateRangeProvider from './components/core/DateRangeProvider';
+import { TRPCProvider } from './core/tRPC.provider';
 
 export interface RootProviderProps {
   children: React.ReactNode;

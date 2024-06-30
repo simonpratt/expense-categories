@@ -1,5 +1,6 @@
-import { Button, ControlLine, MinimalMenu } from '@dtdot/lego';
 import React, { useState } from 'react';
+
+import { Button, ControlLine, MinimalMenu } from '@dtdot/lego';
 
 import UploadCsvModal from '../modals/UploadCsvModal';
 import DateRangeSelect from './DateRangeSelect';

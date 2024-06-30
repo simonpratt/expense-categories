@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Box, Tooltip } from '@mui/material';
+
 import { colorMapping } from '../../core/colorMapping';
 
 interface ColorPickerProps {

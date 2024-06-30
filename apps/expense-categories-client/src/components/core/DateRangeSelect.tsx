@@ -1,8 +1,11 @@
 import React, { useEffect, useContext } from 'react';
+
 import { Select } from '@dtdot/lego';
+
 import { DateTime } from 'luxon';
-import DateRangeContext from './DateRangeContext';
 import styled from 'styled-components';
+
+import DateRangeContext from './DateRangeContext';
 
 const StyledSelect = styled(Select)`
   width: 160px;

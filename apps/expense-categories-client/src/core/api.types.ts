@@ -1,5 +1,5 @@
-import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { RootRouter } from '@expense-categories/api';
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 
 type RouterOutput = inferRouterOutputs<RootRouter>;
 type RouterInput = inferRouterInputs<RootRouter>;
