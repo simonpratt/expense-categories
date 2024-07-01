@@ -4,9 +4,9 @@ import { parseDescription } from '../../src/helpers/parseDescription';
 
 describe('parseDescription', () => {
   it('must correctly parse internal transfers and preserve the account number', () => {
-    const description = 'Dollar savings - Internal Transfer - Receipt 31241 Savings Maximiser 08123909124';
+    const description = 'House savings - Internal Transfer - Receipt 31241 Savings Maximiser 08123909124';
     const result = parseDescription(description);
-    assert.equal(result, 'dollar savings - savings maximiser 08123909124');
+    assert.equal(result, 'transfer <> savings maximiser 08123909124 - house savings');
   });
 
   it('must correctly parse other receipts', () => {
