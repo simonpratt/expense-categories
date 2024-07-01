@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "predev": "npx prisma migrate deploy && npx prisma generate",
     "dev": "tsx watch --clear-screen=false -r dotenv/config src/index.ts | pino-pretty",
-    "prebuild": "npx prisma migrate deploy && npx prisma generate",
+    "prebuild": "npx prisma generate",
     "postbuild": "cp -r src/generated build",
     "test": "node --import tsx --test test/**/*.test.ts",
     "build": "tsc"
